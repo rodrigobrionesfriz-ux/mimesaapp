@@ -10,7 +10,8 @@ const FILTROS = [
   ['todas', 'Todas'], ['propias', 'Mías'],
   ['desayuno', 'Desayunos'], ['colacion_am', 'Colación AM'], ['almuerzo', 'Almuerzos'],
   ['colacion_pm', 'Colación PM'], ['cena', 'Once / cena'], ['colacion_opcional', 'Opcional'],
-  ['hija', 'De la hija'], ['oculta', 'Con legumbre oculta'], ['rapida', '20 min o menos'],
+  ['hija', 'De la hija'], ['salsa', 'Salsas'], ['base', 'Bases y untables'],
+  ['oculta', 'Con legumbre oculta'], ['rapida', '20 min o menos'],
 ];
 
 const EN_BLANCO = {
@@ -160,6 +161,7 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
                 {r.al?.length > 0 && <Etiqueta tono="negativa"><AlertTriangle size={11} />{r.al[0]}</Etiqueta>}
                 {r.propia && <Etiqueta tono="marca">mía</Etiqueta>}
                 {(r.deLaHija || r.perfil === 'hija') && <Etiqueta tono="positiva">de la hija</Etiqueta>}
+                {r.origen && <Etiqueta>{r.origen}</Etiqueta>}
               </span>
             </span>
             <ChevronRight size={17} style={{ color: 'var(--texto-tenue)', flexShrink: 0 }} />
