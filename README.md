@@ -11,8 +11,10 @@ recetas base cumplen ambas; 14 llevan legumbre camuflada para que la hija las co
 Las recetas con frutos secos están marcadas con advertencia y son solo para los adultos.
 
 > **Sobre las porciones.** La pauta entregada en consulta está personalizada para una sola persona
-> adulta. Las cantidades del recetario son por adulto y no deben aplicarse a la niña de 3 años.
-> Si el esposo o la hija necesitan sus propias porciones, hay que pedirlas en consulta.
+> adulta. Por eso la hija tiene un plan aparte dentro de la app, con su propia estructura, porciones
+> y recetario. Ese plan de la niña **no viene de la consulta**: es una guía práctica para organizar
+> la semana y debe validarse con su pediatra o con una nutricionista infantil, sobre todo por la
+> alergia al maní.
 
 ### Estructura diaria de la pauta
 
@@ -91,9 +93,10 @@ ven y editan el mismo plan.
 
 | Sección | Qué hace |
 |---|---|
-| **Semana** | 7 días × 6 tiempos de comida, cada uno con el objetivo de porciones de la pauta a la vista. El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
+| **Semana** | Dos planes independientes que se cambian con el selector de arriba: el de los adultos (6 tiempos de comida, con el objetivo de porciones de la pauta a la vista) y el de la hija (5 tiempos, con porciones y texturas de preescolar). El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
 | **Mes** | Calendario con un punto por día según cuánto se cumplió, más el acumulado mensual. |
 | **Compras** | Lista de la semana agrupada por pasillo de supermercado, con marcado que se sincroniza entre teléfonos. |
+| **Guía de la hija** | Su estructura de cinco tiempos, porciones medidas con sus manos, precauciones por la alergia al maní y por riesgo de atoro, y qué funciona para que coma a los 3 años. |
 | **Porciones** | Las equivalencias de la guía de la nutricionista, buscables. Además las guías de meal prep, conservación de alimentos, orden del refrigerador y recorrido del supermercado. |
 | **Recetas** | Las 51 base más las que agregue la familia. Se tocan para ver ingredientes, pasos y truco. Filtros por tiempo de comida, propias, legumbre oculta y duración. El formulario rechaza cualquier receta que mencione maní. |
 | **Historial** | Cada discrepancia entre lo sugerido y lo real, con el motivo. Muestra por qué se cae el plan y qué platos se reemplazan más. |
@@ -110,8 +113,9 @@ generan una entrada en el historial.
 ```
 usuarios/{uid}                        → { hogarId, nombre, correo }
 hogares/{hogarId}                     → { nombre, miembros[], creado }
-  ├── semanas/{YYYY-MM-DD}            → { plan: { fecha: { desayuno, colacion, almuerzo, cena } }, compras }
-  ├── historial/{fecha_tipo}          → { sugerido, real, motivo, estado, ts }
+  ├── semanas/{YYYY-MM-DD}            → plan de los adultos + lista de compras
+  ├── semanas_hija/{YYYY-MM-DD}       → plan de la hija + lista de compras
+  ├── historial/{perfil_fecha_tipo}   → { perfil, sugerido, real, motivo, estado, ts }
   ├── recetas/{id}                    → recetas propias de la familia
   └── config/pauta                    → texto e indicaciones del documento Word
 ```
@@ -125,7 +129,8 @@ src/
   estilos.css             paleta SAP Fiori (Quartz Light y Quartz Dark)
   utiles.js               fechas, tipos de comida, categorías de supermercado
   datos/pauta.js          la pauta, las equivalencias y las guías de la nutricionista
-  datos/recetas.js        las 51 recetas base, con las porciones que aporta cada una
+  datos/recetas.js        las 51 recetas base de los adultos, con sus porciones
+  datos/hija.js           el plan de la hija: estructura, porciones y sus 30 recetas
   datos/nube.js           hooks de Firestore en tiempo real
   componentes/            una vista por sección
 public/
