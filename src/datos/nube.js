@@ -93,24 +93,25 @@ export function useHogar(usuario) {
 }
 
 /* ------------------------------ semana ------------------------------ */
-export function useSemana(hogarId, clave) {
+// coleccion: 'semanas' para el plan de los adultos, 'semanas_hija' para el de la niña.
+export function useSemana(hogarId, clave, coleccion = 'semanas') {
   const [semana, setSemana] = useState({ plan: {}, compras: {} });
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     if (!hogarId) return;
     setCargando(true);
-    return onSnapshot(doc(db, 'hogares', hogarId, 'semanas', clave), (s) => {
+    return onSnapshot(doc(db, 'hogares', hogarId, coleccion, clave), (s) => {
       setSemana(s.exists() ? { plan: s.data().plan || {}, compras: s.data().compras || {} } : { plan: {}, compras: {} });
       setCargando(false);
     }, () => setCargando(false));
-  }, [hogarId, clave]);
+  }, [hogarId, clave, coleccion]);
 
   const guardar = useCallback(async (plan, compras) => {
-    await setDoc(doc(db, 'hogares', hogarId, 'semanas', clave), {
+    await setDoc(doc(db, 'hogares', hogarId, coleccion, clave), {
       plan, compras: compras || {}, actualizado: new Date().toISOString(),
     });
-  }, [hogarId, clave]);
+  }, [hogarId, clave, coleccion]);
 
   return { semana, cargando, guardar };
 }
@@ -125,14 +126,14 @@ export function useHistorial(hogarId) {
     return onSnapshot(q, (s) => setHistorial(s.docs.map((d) => ({ _id: d.id, ...d.data() }))));
   }, [hogarId]);
 
-  // Un registro por fecha+tiempo de comida: si se corrige, se sobrescribe.
+  // Un registro por perfil+fecha+tiempo de comida: si se corrige, se sobrescribe.
   const registrar = useCallback(async (entrada) => {
-    const id = `${entrada.fecha}_${entrada.tipo}`;
+    const id = `${entrada.perfil || 'adultos'}_${entrada.fecha}_${entrada.tipo}`;
     await setDoc(doc(db, 'hogares', hogarId, 'historial', id), entrada);
   }, [hogarId]);
 
-  const quitar = useCallback(async (fecha, tipo) => {
-    await deleteDoc(doc(db, 'hogares', hogarId, 'historial', `${fecha}_${tipo}`)).catch(() => {});
+  const quitar = useCallback(async (fecha, tipo, perfil = 'adultos') => {
+    await deleteDoc(doc(db, 'hogares', hogarId, 'historial', `${perfil}_${fecha}_${tipo}`)).catch(() => {});
   }, [hogarId]);
 
   const vaciar = useCallback(async () => {
@@ -176,9 +177,9 @@ export function usePauta(hogarId) {
 }
 
 /* ------------------- semanas de un mes (vista mensual) ------------------- */
-export async function semanasEnRango(hogarId, desde, hasta) {
+export async function semanasEnRango(hogarId, desde, hasta, coleccion = 'semanas') {
   const q = query(
-    collection(db, 'hogares', hogarId, 'semanas'),
+    collection(db, 'hogares', hogarId, coleccion),
     where(documentId(), '>=', desde),
     where(documentId(), '<=', hasta),
   );
