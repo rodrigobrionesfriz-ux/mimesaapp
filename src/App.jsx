@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Calendar, CalendarDays, ShoppingCart, BookOpen, History as HistoryIcon,
-  FileText, Sun, Moon, LogOut,
+  FileText, Sun, Moon, LogOut, Menu, X,
 } from 'lucide-react';
 
 import { RECETARIO } from './datos/recetas';
@@ -37,6 +37,18 @@ function useTema() {
   return [tema, () => setTema((t) => (t === 'claro' ? 'oscuro' : 'claro'))];
 }
 
+// A partir de 900px la barra lateral queda fija y el botón de menú desaparece.
+function usePantallaAncha() {
+  const [ancha, setAncha] = useState(() => window.matchMedia('(min-width: 900px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 900px)');
+    const cambio = (e) => setAncha(e.matches);
+    mq.addEventListener('change', cambio);
+    return () => mq.removeEventListener('change', cambio);
+  }, []);
+  return ancha;
+}
+
 export default function App() {
   const [tema, alternarTema] = useTema();
   const { usuario, cargando: cargandoSesion, entrar, salir } = useSesion();
@@ -58,10 +70,22 @@ export default function App() {
 
 function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const [seccion, setSeccion] = useState('semana');
+  const [menuAbierto, setMenuAbierto] = useState(false);
   const [inicio, setInicio] = useState(() => lunesDe(new Date()));
   const [modal, setModal] = useState(null);
   const [brindis, setBrindis] = useState(null);
   const [generando, setGenerando] = useState(false);
+  const anchaFija = usePantallaAncha();
+
+  // Escape cierra el menú; en pantalla ancha nunca está en modo cajón.
+  useEffect(() => {
+    if (!menuAbierto) return;
+    const esc = (e) => e.key === 'Escape' && setMenuAbierto(false);
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, [menuAbierto]);
+
+  useEffect(() => { if (anchaFija) setMenuAbierto(false); }, [anchaFija]);
 
   const claveSemana = iso(inicio);
   const { semana, guardar } = useSemana(hogarId, claveSemana);
@@ -164,12 +188,41 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
     guardar(semana.plan, { ...semana.compras, [ing]: !semana.compras[ing] });
 
   const slotActivo = modal ? semana.plan[modal.fecha]?.[modal.tipo] : null;
+  const seccionActual = SECCIONES.find((s) => s.k === seccion);
+
+  const irA = (k) => { setSeccion(k); setMenuAbierto(false); };
 
   return (
     <div className="app">
+      {menuAbierto && <div className="velo-menu" onClick={() => setMenuAbierto(false)} />}
+
+      <aside className={`lateral${menuAbierto ? ' lateral-abierta' : ''}`}
+        aria-label="Navegación principal" aria-hidden={!menuAbierto && !anchaFija}>
+        <div className="lateral-cabecera">
+          <h2>Mi Mesa</h2>
+          <button className="shell-boton boton-menu" onClick={() => setMenuAbierto(false)}
+            aria-label="Cerrar menú">
+            <X size={17} />
+          </button>
+        </div>
+        <nav className="lateral-menu">
+          {SECCIONES.map(({ k, label, Icono }) => (
+            <button key={k} className="lateral-item" onClick={() => irA(k)}
+              aria-current={seccion === k ? 'page' : undefined}>
+              <Icono size={18} />{label}
+            </button>
+          ))}
+        </nav>
+        <div className="lateral-pie">{usuario.displayName || usuario.email}</div>
+      </aside>
+
       <header className="shell">
-        <div>
-          <h1>Mi Mesa</h1>
+        <button className="shell-boton boton-menu" onClick={() => setMenuAbierto(true)}
+          aria-label="Abrir menú" aria-expanded={menuAbierto}>
+          <Menu size={18} />
+        </button>
+        <div className="shell-titulo">
+          <h1>{seccionActual?.label || 'Mi Mesa'}</h1>
           <p>Esposo 43 · Esposa 40, sin lactosa · Hija 3 años, legumbres camufladas</p>
         </div>
         <div className="shell-acciones">
@@ -214,15 +267,6 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
           </>
         )}
       </main>
-
-      <nav className="navbar">
-        {SECCIONES.map(({ k, label, Icono }) => (
-          <button key={k} onClick={() => setSeccion(k)}
-            aria-current={seccion === k ? 'page' : undefined}>
-            <Icono size={18} />{label}
-          </button>
-        ))}
-      </nav>
 
       {brindis && <div className="brindis">{brindis}</div>}
 
