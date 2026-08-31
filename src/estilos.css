@@ -481,3 +481,22 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 .grilla-porciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .campo-porcion { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--texto-tenue); }
 .campo-porcion input { padding: 8px 10px; text-align: center; }
+
+/* ---------- selector de perfil ---------- */
+.perfiles {
+  display: flex; gap: 4px; padding: 3px;
+  background: var(--fondo-alterno);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.perfiles button {
+  flex: 1; padding: 8px 10px;
+  background: none; border: none; border-radius: 6px;
+  font-size: 13.5px; color: var(--texto-tenue);
+}
+.perfiles button[aria-selected='true'] {
+  background: var(--tarjeta);
+  color: var(--marca);
+  font-weight: 600;
+  box-shadow: var(--sombra);
+}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Calendar, CalendarDays, ShoppingCart, BookOpen, History as HistoryIcon,
-  FileText, Scale, Sun, Moon, LogOut, Menu, X,
+  FileText, Scale, Baby, Sun, Moon, LogOut, Menu, X,
 } from 'lucide-react';
 
 import { RECETARIO } from './datos/recetas';
-import { TIPOS, iso, sumarDias, lunesDe, barajar, diaVacio } from './utiles';
+import { PLAN, SUPLEMENTO, describirPorciones } from './datos/pauta';
+import { TIPOS_HIJA, PLAN_HIJA, RECETARIO_HIJA } from './datos/hija';
+import { TIPOS, iso, sumarDias, lunesDe, barajar } from './utiles';
 import {
   useSesion, useHogar, useSemana, useHistorial, useRecetasPropias, usePauta,
 } from './datos/nube';
@@ -18,6 +20,7 @@ import Recetas from './componentes/Recetas';
 import Historial from './componentes/Historial';
 import Pauta from './componentes/Pauta';
 import Porciones from './componentes/Porciones';
+import GuiaHija from './componentes/GuiaHija';
 import HojaComida from './componentes/HojaComida';
 
 const SECCIONES = [
@@ -26,6 +29,7 @@ const SECCIONES = [
   { k: 'compras', label: 'Compras', Icono: ShoppingCart },
   { k: 'recetas', label: 'Recetas', Icono: BookOpen },
   { k: 'porciones', label: 'Porciones', Icono: Scale },
+  { k: 'hija', label: 'Guía de la hija', Icono: Baby },
   { k: 'historial', label: 'Historial', Icono: HistoryIcon },
   { k: 'pauta', label: 'Pauta', Icono: FileText },
 ];
@@ -77,6 +81,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const [modal, setModal] = useState(null);
   const [brindis, setBrindis] = useState(null);
   const [generando, setGenerando] = useState(false);
+  const [perfil, setPerfil] = useState('adultos');
   const anchaFija = usePantallaAncha();
 
   // Escape cierra el menú; en pantalla ancha nunca está en modo cajón.
@@ -90,13 +95,36 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   useEffect(() => { if (anchaFija) setMenuAbierto(false); }, [anchaFija]);
 
   const claveSemana = iso(inicio);
-  const { semana, guardar } = useSemana(hogarId, claveSemana);
+  const adultos = useSemana(hogarId, claveSemana, 'semanas');
+  const nina = useSemana(hogarId, claveSemana, 'semanas_hija');
+  const { semana, guardar } = perfil === 'hija' ? nina : adultos;
   const { historial, registrar, quitar, vaciar } = useHistorial(hogarId);
   const { propias, agregar, borrar } = useRecetasPropias(hogarId);
   const { pauta, guardar: guardarPauta, quitar: quitarPauta } = usePauta(hogarId);
 
-  const recetas = useMemo(() => [...RECETARIO, ...propias], [propias]);
+  const esHija = perfil === 'hija';
+  const tipos = esHija ? TIPOS_HIJA : TIPOS;
+  const coleccion = esHija ? 'semanas_hija' : 'semanas';
+  const metaLegumbres = esHija ? 5 : 4;
+
+  const objetivoDe = useCallback((k) => (esHija
+    ? PLAN_HIJA[k]?.objetivo
+    : describirPorciones(PLAN[k]?.objetivo)), [esHija]);
+
+  const pieDia = esHija
+    ? 'Agua a libre demanda entre comidas'
+    : `${SUPLEMENTO.nombre} · ${SUPLEMENTO.momento.toLowerCase()} · ${SUPLEMENTO.cantidad}`;
+
+  const base = esHija ? RECETARIO_HIJA : RECETARIO;
+  const recetas = useMemo(
+    () => [...base, ...propias.filter((r) => (r.perfil === 'hija') === esHija)],
+    [base, propias, esHija],
+  );
   const porId = useMemo(() => Object.fromEntries(recetas.map((r) => [r.id, r])), [recetas]);
+  const todasLasRecetas = useMemo(
+    () => [...RECETARIO, ...RECETARIO_HIJA.map((r) => ({ ...r, deLaHija: true })), ...propias],
+    [propias],
+  );
   const fechas = useMemo(() => Array.from({ length: 7 }, (_, i) => sumarDias(inicio, i)), [inicio]);
 
   const avisar = useCallback((t) => {
@@ -108,12 +136,12 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const generar = async () => {
     setGenerando(true);
     const rondas = {};
-    for (const t of TIPOS) rondas[t.k] = barajar(recetas.filter((r) => r.t === t.k));
+    for (const t of tipos) rondas[t.k] = barajar(recetas.filter((r) => r.t === t.k));
 
     const plan = {};
     fechas.forEach((f, i) => {
-      const dia = diaVacio();
-      for (const t of TIPOS) {
+      const dia = Object.fromEntries(tipos.map((t) => [t.k, null]));
+      for (const t of tipos) {
         const lista = rondas[t.k];
         if (!lista.length) continue;
         let r = lista[i % lista.length];
@@ -124,12 +152,12 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
       plan[iso(f)] = dia;
     });
 
-    // Garantiza al menos 4 preparaciones con legumbre camuflada por semana.
+    // Garantiza un mínimo de preparaciones con legumbre camuflada por semana.
     const contarOcultas = () => Object.values(plan)
-      .reduce((n, d) => n + TIPOS.filter((t) => porId[d[t.k]?.id]?.leg === 'oculta').length, 0);
+      .reduce((n, d) => n + tipos.filter((t) => porId[d[t.k]?.id]?.leg === 'oculta').length, 0);
     const ocultas = barajar(recetas.filter((r) => r.leg === 'oculta'));
     let k = 0;
-    while (contarOcultas() < 4 && k < ocultas.length) {
+    while (contarOcultas() < metaLegumbres && k < ocultas.length) {
       const r = ocultas[k++];
       const libres = fechas.map(iso).filter((f) => porId[plan[f][r.t]?.id]?.leg !== 'oculta');
       if (libres.length) {
@@ -140,13 +168,13 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
 
     await guardar(plan, {});
     setGenerando(false);
-    avisar('Semana generada');
+    avisar(esHija ? 'Semana de la hija generada' : 'Semana generada');
   };
 
   /* ------------------- registro de lo realmente preparado ------------------- */
   const marcar = async (fecha, tipo, estado, real, motivo, realId) => {
     const plan = { ...semana.plan };
-    const dia = { ...(plan[fecha] || diaVacio()) };
+    const dia = { ...(plan[fecha] || Object.fromEntries(tipos.map((t) => [t.k, null]))) };
     const previo = dia[tipo];
     if (!previo) return;
 
@@ -162,10 +190,11 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
     await guardar(plan, semana.compras);
 
     if (estado === 'cumplido') {
-      await quitar(fecha, tipo);
+      await quitar(fecha, tipo, perfil);
     } else {
       await registrar({
-        fecha, tipo, estado,
+        fecha, tipo, estado, perfil,
+        tipoLabel: tipos.find((t) => t.k === tipo)?.label || tipo,
         motivo: motivo || 'Sin motivo',
         sugerido: porId[previo.id]?.n || '—',
         real: estado === 'omitido' ? null : (real || 'Otra preparación'),
@@ -181,11 +210,11 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
 
   const cambiarSugerencia = async (fecha, tipo, id) => {
     const plan = { ...semana.plan };
-    const dia = { ...(plan[fecha] || diaVacio()) };
+    const dia = { ...(plan[fecha] || Object.fromEntries(tipos.map((t) => [t.k, null]))) };
     dia[tipo] = { id, estado: 'planificado', real: null, motivo: null };
     plan[fecha] = dia;
     await guardar(plan, semana.compras);
-    await quitar(fecha, tipo);
+    await quitar(fecha, tipo, perfil);
   };
 
   const marcarCompra = (ing) =>
@@ -240,20 +269,35 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
       </header>
 
       <main className="contenido">
+        {['semana', 'mes', 'compras'].includes(seccion) && (
+          <div className="perfiles" role="tablist" aria-label="Plan que se está viendo">
+            <button role="tab" aria-selected={perfil === 'adultos'} onClick={() => setPerfil('adultos')}>
+              Adultos
+            </button>
+            <button role="tab" aria-selected={perfil === 'hija'} onClick={() => setPerfil('hija')}>
+              Hija, 3 años
+            </button>
+          </div>
+        )}
+
         {seccion === 'semana' && (
           <Semana
             inicio={inicio} setInicio={setInicio} fechas={fechas}
             plan={semana.plan} porId={porId} generar={generar} generando={generando}
-            abrir={(fecha, tipo) => setModal({ fecha, tipo })} pauta={pauta}
+            abrir={(fecha, tipo) => setModal({ fecha, tipo })} pauta={esHija ? null : pauta}
+            tipos={tipos} objetivo={objetivoDe} pie={pieDia} metaLegumbres={metaLegumbres}
           />
         )}
-        {seccion === 'mes' && <Mes hogarId={hogarId} />}
+        {seccion === 'mes' && <Mes hogarId={hogarId} coleccion={coleccion} tipos={tipos} />}
         {seccion === 'compras' && (
           <Compras fechas={fechas} plan={semana.plan} porId={porId}
-            compras={semana.compras} onMarcar={marcarCompra} />
+            compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} />
         )}
-        {seccion === 'recetas' && <Recetas recetas={recetas} onAgregar={agregar} onBorrar={borrar} />}
+        {seccion === 'recetas' && (
+          <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar} />
+        )}
         {seccion === 'porciones' && <Porciones />}
+        {seccion === 'hija' && <GuiaHija />}
         {seccion === 'historial' && <Historial historial={historial} onVaciar={vaciar} />}
         {seccion === 'pauta' && (
           <>
@@ -277,7 +321,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
       {modal && (
         <HojaComida
           fecha={modal.fecha} tipo={modal.tipo} slot={slotActivo}
-          receta={porId[slotActivo?.id]} recetas={recetas}
+          receta={porId[slotActivo?.id]} recetas={recetas} tipos={tipos}
           onCerrar={() => setModal(null)} onMarcar={marcar} onCambiar={cambiarSugerencia}
         />
       )}
