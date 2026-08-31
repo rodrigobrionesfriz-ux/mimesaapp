@@ -2,17 +2,29 @@ import React, { useState } from 'react';
 import { LogIn, Home, Users } from 'lucide-react';
 import { Boton } from './Comunes';
 
+const MENSAJES = {
+  'auth/unauthorized-domain':
+    'Este dominio todavía no está autorizado en Firebase. Agrégalo en Authentication → Settings → Authorized domains.',
+  'auth/operation-not-allowed':
+    'El acceso con Google no está habilitado en Firebase. Actívalo en Authentication → Sign-in method.',
+  'auth/network-request-failed':
+    'Sin conexión. Revisa la red y vuelve a intentar.',
+  'auth/account-exists-with-different-credential':
+    'Ese correo ya está registrado con otro método de acceso.',
+};
+
 export function Entrar({ onEntrar }) {
   const [error, setError] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
 
   const intentar = async () => {
     setError(null);
+    setOcupado(true);
     try { await onEntrar(); }
     catch (e) {
-      setError(e?.code === 'auth/popup-blocked'
-        ? 'El navegador bloqueó la ventana de Google. Permite las ventanas emergentes para este sitio y vuelve a intentar.'
-        : 'No se pudo iniciar sesión. Revisa tu conexión y vuelve a intentar.');
+      setError(MENSAJES[e?.code] || 'No se pudo iniciar sesión. Revisa tu conexión y vuelve a intentar.');
     }
+    setOcupado(false);
   };
 
   return (
@@ -24,7 +36,12 @@ export function Entrar({ onEntrar }) {
           Inicia sesión para que el plan quede sincronizado entre los teléfonos de la casa.
         </p>
         {error && <div className="alerta alerta-error">{error}</div>}
-        <Boton bloque onClick={intentar}><LogIn size={16} />Entrar con Google</Boton>
+        <Boton bloque onClick={intentar} disabled={ocupado}>
+          <LogIn size={16} />{ocupado ? 'Conectando…' : 'Entrar con Google'}
+        </Boton>
+        <p className="dato" style={{ marginTop: 14, fontSize: 12.5 }}>
+          El acceso es únicamente con cuenta de Google. No se guardan contraseñas.
+        </p>
       </div>
     </div>
   );
