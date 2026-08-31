@@ -3,9 +3,29 @@
 App familiar para planificar desayuno, colación, almuerzo y cena, y registrar qué se preparó
 realmente frente a lo que estaba sugerido.
 
-Restricciones aplicadas a todo el recetario: **sin lactosa** y **sin maní** (alergia). Las 45
-recetas base cumplen ambas; 12 llevan legumbre camuflada para que la hija las coma sin verlas.
-La única receta con frutos secos está marcada con una advertencia y es solo para los adultos.
+La app está construida sobre la pauta real de la nutricionista Francisca Fuentes Olave: sus seis
+tiempos de comida, sus porciones por grupo de alimentos y sus guías de meal prep y compras.
+
+Restricciones aplicadas a todo el recetario: **sin lactosa** y **sin maní** (alergia). Las 51
+recetas base cumplen ambas; 14 llevan legumbre camuflada para que la hija las coma sin verlas.
+Las recetas con frutos secos están marcadas con advertencia y son solo para los adultos.
+
+> **Sobre las porciones.** La pauta entregada en consulta está personalizada para una sola persona
+> adulta. Las cantidades del recetario son por adulto y no deben aplicarse a la niña de 3 años.
+> Si el esposo o la hija necesitan sus propias porciones, hay que pedirlas en consulta.
+
+### Estructura diaria de la pauta
+
+| Tiempo | Porciones |
+|---|---|
+| Desayuno | 2 cereal + 2 proteína + 1 fruta + 1 lácteo |
+| Colación de la mañana | 1 fruta + 1 ARL |
+| Almuerzo | 1 cereal + 2 proteína + 2 tazas de mix verde |
+| Colación de la tarde | 1 fruta + 1 lácteo + ½ cereal |
+| Once / cena | 1 cereal + 2 proteína + 2 tazas de mix verde |
+| Colación opcional | 1 lácteo + ½ cereal |
+
+Más el omega 3 antes de dormir, todos los días.
 
 - **PWA**: se instala en el teléfono como una app más y funciona sin conexión.
 - **Firebase**: el plan se sincroniza entre los teléfonos de la casa en tiempo real.
@@ -71,10 +91,11 @@ ven y editan el mismo plan.
 
 | Sección | Qué hace |
 |---|---|
-| **Semana** | 7 días × 4 tiempos de comida. El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
+| **Semana** | 7 días × 6 tiempos de comida, cada uno con el objetivo de porciones de la pauta a la vista. El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
 | **Mes** | Calendario con un punto por día según cuánto se cumplió, más el acumulado mensual. |
 | **Compras** | Lista de la semana agrupada por pasillo de supermercado, con marcado que se sincroniza entre teléfonos. |
-| **Recetas** | Las 45 base más las que agregue la familia. Se tocan para ver ingredientes, pasos y truco. Filtros por tiempo de comida, propias, legumbre oculta y duración. El formulario rechaza cualquier receta que mencione maní. |
+| **Porciones** | Las equivalencias de la guía de la nutricionista, buscables. Además las guías de meal prep, conservación de alimentos, orden del refrigerador y recorrido del supermercado. |
+| **Recetas** | Las 51 base más las que agregue la familia. Se tocan para ver ingredientes, pasos y truco. Filtros por tiempo de comida, propias, legumbre oculta y duración. El formulario rechaza cualquier receta que mencione maní. |
 | **Historial** | Cada discrepancia entre lo sugerido y lo real, con el motivo. Muestra por qué se cae el plan y qué platos se reemplazan más. |
 | **Pauta** | Sube el `.docx` de la nutricionista. Extrae el texto, detecta las indicaciones y las muestra sobre el planificador. |
 
@@ -103,7 +124,8 @@ src/
   firebase.js             inicialización con caché offline
   estilos.css             paleta SAP Fiori (Quartz Light y Quartz Dark)
   utiles.js               fechas, tipos de comida, categorías de supermercado
-  datos/recetas.js        las 45 recetas base
+  datos/pauta.js          la pauta, las equivalencias y las guías de la nutricionista
+  datos/recetas.js        las 51 recetas base, con las porciones que aporta cada una
   datos/nube.js           hooks de Firestore en tiempo real
   componentes/            una vista por sección
 public/
