@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Calendar, CalendarDays, ShoppingCart, BookOpen, History as HistoryIcon,
-  FileText, Sun, Moon, LogOut, Menu, X,
+  FileText, Scale, Sun, Moon, LogOut, Menu, X,
 } from 'lucide-react';
 
 import { RECETARIO } from './datos/recetas';
@@ -17,6 +17,7 @@ import Compras from './componentes/Compras';
 import Recetas from './componentes/Recetas';
 import Historial from './componentes/Historial';
 import Pauta from './componentes/Pauta';
+import Porciones from './componentes/Porciones';
 import HojaComida from './componentes/HojaComida';
 
 const SECCIONES = [
@@ -24,6 +25,7 @@ const SECCIONES = [
   { k: 'mes', label: 'Mes', Icono: CalendarDays },
   { k: 'compras', label: 'Compras', Icono: ShoppingCart },
   { k: 'recetas', label: 'Recetas', Icono: BookOpen },
+  { k: 'porciones', label: 'Porciones', Icono: Scale },
   { k: 'historial', label: 'Historial', Icono: HistoryIcon },
   { k: 'pauta', label: 'Pauta', Icono: FileText },
 ];
@@ -251,6 +253,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
             compras={semana.compras} onMarcar={marcarCompra} />
         )}
         {seccion === 'recetas' && <Recetas recetas={recetas} onAgregar={agregar} onBorrar={borrar} />}
+        {seccion === 'porciones' && <Porciones />}
         {seccion === 'historial' && <Historial historial={historial} onVaciar={vaciar} />}
         {seccion === 'pauta' && (
           <>

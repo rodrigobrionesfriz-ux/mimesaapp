@@ -1,8 +1,11 @@
+// Los seis tiempos de comida de la pauta de la nutricionista.
 export const TIPOS = [
-  { k: 'desayuno', label: 'Desayuno' },
-  { k: 'colacion', label: 'Colación' },
-  { k: 'almuerzo', label: 'Almuerzo' },
-  { k: 'cena', label: 'Cena' },
+  { k: 'desayuno', label: 'Desayuno', corto: 'Desayuno' },
+  { k: 'colacion_am', label: 'Colación de la mañana', corto: 'Colación AM' },
+  { k: 'almuerzo', label: 'Almuerzo', corto: 'Almuerzo' },
+  { k: 'colacion_pm', label: 'Colación de la tarde', corto: 'Colación PM' },
+  { k: 'cena', label: 'Once / cena', corto: 'Once / cena' },
+  { k: 'colacion_opcional', label: 'Colación opcional', corto: 'Opcional' },
 ];
 
 export const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -33,9 +36,11 @@ export const barajar = (arr) => {
   return a;
 };
 
-export const diaVacio = () => ({ desayuno: null, colacion: null, almuerzo: null, cena: null });
+export const diaVacio = () =>
+  Object.fromEntries(TIPOS.map((t) => [t.k, null]));
 
 export const etiquetaTipo = (k) => TIPOS.find((t) => t.k === k)?.label || k;
+export const etiquetaCorta = (k) => TIPOS.find((t) => t.k === k)?.corto || k;
 
 // Agrupa ingredientes por pasillo de supermercado para la lista de compras.
 export const categoria = (ing) => {
