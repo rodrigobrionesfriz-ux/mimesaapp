@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  onAuthStateChanged, signInWithPopup, signOut,
+  onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut,
 } from 'firebase/auth';
 import {
   doc, getDoc, setDoc, deleteDoc, collection, onSnapshot,
@@ -9,14 +9,40 @@ import {
 import { auth, db, proveedorGoogle } from '../firebase';
 
 /* ------------------------------ sesión ------------------------------ */
+// Casos en los que el navegador no deja abrir la ventana emergente de Google.
+// Pasa sobre todo en la PWA instalada en iPhone, donde Safari corre en modo standalone.
+const SIN_VENTANA = new Set([
+  'auth/popup-blocked',
+  'auth/popup-closed-by-user',
+  'auth/cancelled-popup-request',
+  'auth/operation-not-supported-in-this-environment',
+]);
+
 export function useSesion() {
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(true);
 
-  useEffect(() => onAuthStateChanged(auth, (u) => { setUsuario(u); setCargando(false); }), []);
+  useEffect(() => {
+    // Si volvemos de la redirección de Google, esto recoge el resultado.
+    getRedirectResult(auth).catch(() => {});
+    return onAuthStateChanged(auth, (u) => { setUsuario(u); setCargando(false); });
+  }, []);
 
-  const entrar = () => signInWithPopup(auth, proveedorGoogle);
-  const salir = () => signOut(auth);
+  // Único método: cuenta de Google. Primero ventana emergente; si el navegador
+  // la bloquea, se reintenta redirigiendo la pestaña completa.
+  const entrar = useCallback(async () => {
+    try {
+      await signInWithPopup(auth, proveedorGoogle);
+    } catch (e) {
+      if (SIN_VENTANA.has(e?.code)) {
+        await signInWithRedirect(auth, proveedorGoogle);
+        return;
+      }
+      throw e;
+    }
+  }, []);
+
+  const salir = useCallback(() => signOut(auth), []);
 
   return { usuario, cargando, entrar, salir };
 }
