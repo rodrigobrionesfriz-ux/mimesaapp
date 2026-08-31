@@ -142,7 +142,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   };
 
   /* ------------------- registro de lo realmente preparado ------------------- */
-  const marcar = async (fecha, tipo, estado, real, motivo) => {
+  const marcar = async (fecha, tipo, estado, real, motivo, realId) => {
     const plan = { ...semana.plan };
     const dia = { ...(plan[fecha] || diaVacio()) };
     const previo = dia[tipo];
@@ -151,6 +151,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
     dia[tipo] = {
       ...previo, estado,
       real: real || null,
+      realId: realId || null,
       motivo: motivo || null,
       marcado: new Date().toISOString(),
       por: usuario.displayName || usuario.email || '',
@@ -166,6 +167,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
         motivo: motivo || 'Sin motivo',
         sugerido: porId[previo.id]?.n || '—',
         real: estado === 'omitido' ? null : (real || 'Otra preparación'),
+        realId: realId || null,
         por: usuario.displayName || '',
         ts: new Date().toISOString(),
       });
@@ -199,7 +201,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
       <aside className={`lateral${menuAbierto ? ' lateral-abierta' : ''}`}
         aria-label="Navegación principal" aria-hidden={!menuAbierto && !anchaFija}>
         <div className="lateral-cabecera">
-          <h2>Mi Mesa</h2>
+          <h2>Mi minuta familiar</h2>
           <button className="shell-boton boton-menu" onClick={() => setMenuAbierto(false)}
             aria-label="Cerrar menú">
             <X size={17} />
@@ -222,8 +224,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
           <Menu size={18} />
         </button>
         <div className="shell-titulo">
-          <h1>{seccionActual?.label || 'Mi Mesa'}</h1>
-          <p>Esposo 43 · Esposa 40, sin lactosa · Hija 3 años, legumbres camufladas</p>
+          <h1>{seccionActual?.label || 'Mi minuta familiar'}</h1>
         </div>
         <div className="shell-acciones">
           <button className="shell-boton" onClick={alternarTema}
