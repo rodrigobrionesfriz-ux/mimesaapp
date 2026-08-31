@@ -30,10 +30,10 @@ export function Entrar({ onEntrar }) {
   return (
     <div className="centro-pantalla">
       <div className="acceso">
-        <h2>Mi Mesa</h2>
+        <h2>Mi minuta familiar</h2>
         <p className="parrafo">
-          El plan de comidas de la familia, con el registro de lo que realmente se preparó.
-          Inicia sesión para que el plan quede sincronizado entre los teléfonos de la casa.
+          La minuta de la familia, con el registro de lo que realmente se preparó.
+          Inicia sesión para que quede sincronizada entre los teléfonos de la casa.
         </p>
         {error && <div className="alerta alerta-error">{error}</div>}
         <Boton bloque onClick={intentar} disabled={ocupado}>
