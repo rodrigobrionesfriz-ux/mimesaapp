@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence,
+} from 'firebase/auth';
 import {
   initializeFirestore,
   persistentLocalCache,
@@ -20,7 +22,13 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// Sesión guardada en el dispositivo: nadie tiene que volver a entrar cada mañana.
+setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+// Único método de acceso: cuenta de Google.
 export const proveedorGoogle = new GoogleAuthProvider();
+proveedorGoogle.setCustomParameters({ prompt: 'select_account' });
 
 // Caché local persistente: la app sigue funcionando sin señal en el supermercado
 // y sincroniza sola cuando vuelve la conexión.
