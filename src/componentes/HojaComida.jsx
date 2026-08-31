@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Check, Replace, X } from 'lucide-react';
-import { TIPOS, etiquetaTipo, fechaLegible } from '../utiles';
+import { fechaLegible } from '../utiles';
 import { Boton } from './Comunes';
 import Hoja from './Hoja';
 import DetalleReceta from './DetalleReceta';
@@ -16,14 +16,15 @@ const MOTIVOS = [
 
 const OTRA = '__otra__';
 
-export default function HojaComida({ fecha, tipo, receta, recetas, onCerrar, onMarcar, onCambiar }) {
+export default function HojaComida({ fecha, tipo, receta, recetas, tipos, onCerrar, onMarcar, onCambiar }) {
+  const etiquetaTipo = (k) => tipos.find((t) => t.k === k)?.label || k;
   const [vista, setVista] = useState('receta');
   const [eleccion, setEleccion] = useState('');
   const [textoLibre, setTextoLibre] = useState('');
   const [motivo, setMotivo] = useState('');
 
   const mismoTipo = recetas.filter((r) => r.t === tipo);
-  const otrosTipos = TIPOS.filter((t) => t.k !== tipo)
+  const otrosTipos = tipos.filter((t) => t.k !== tipo)
     .map((t) => ({ ...t, lista: recetas.filter((r) => r.t === t.k) }))
     .filter((g) => g.lista.length);
 

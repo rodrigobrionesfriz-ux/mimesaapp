@@ -1,17 +1,19 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, Sparkles, Clock, Leaf, Check, Replace, X, Pill } from 'lucide-react';
-import { TIPOS, DIAS, iso, sumarDias, lunesDe, fechaCorta } from '../utiles';
-import { PLAN, SUPLEMENTO, describirPorciones } from '../datos/pauta';
+import { DIAS, iso, sumarDias, lunesDe, fechaCorta } from '../utiles';
 import { Boton, Etiqueta, Vacio } from './Comunes';
 
-export default function Semana({ inicio, setInicio, fechas, plan, porId, generar, abrir, pauta, generando }) {
+export default function Semana({
+  inicio, setInicio, fechas, plan, porId, generar, abrir, pauta, generando,
+  tipos, objetivo, pie, metaLegumbres = 4,
+}) {
   const hoy = iso(new Date());
   const vacia = Object.keys(plan).length === 0;
 
   const legumbresLogradas = fechas.reduce((n, f) => {
     const d = plan[iso(f)];
     if (!d) return n;
-    return n + TIPOS.filter((t) => porId[d[t.k]?.id]?.leg === 'oculta' && d[t.k]?.estado === 'cumplido').length;
+    return n + tipos.filter((t) => porId[d[t.k]?.id]?.leg === 'oculta' && d[t.k]?.estado === 'cumplido').length;
   }, 0);
 
   return (
@@ -50,7 +52,7 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
           <div className="tarjeta-cuerpo" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: 12 }}>
             <Leaf size={17} style={{ color: 'var(--marca)', flexShrink: 0 }} />
             <span className="dato">
-              Legumbres camufladas ya comidas esta semana: <strong style={{ color: 'var(--texto)' }}>{legumbresLogradas}</strong> de 4
+              Legumbres camufladas ya comidas esta semana: <strong style={{ color: 'var(--texto)' }}>{legumbresLogradas}</strong> de {metaLegumbres}
             </span>
           </div>
         </div>
@@ -71,17 +73,15 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
               <h3>{DIAS[i]}</h3>
               <span className="dato">{fechaCorta(f)}{esHoy ? ' · hoy' : ''}</span>
             </div>
-            {TIPOS.map((t) => {
+            {tipos.map((t) => {
               const slot = dia?.[t.k];
               const r = slot ? porId[slot.id] : null;
-              const objetivo = PLAN[t.k]?.objetivo;
+              const meta = objetivo?.(t.k);
               return (
                 <button key={t.k} className="comida" onClick={() => abrir(fk, t.k)}>
                   <span className="comida-tipo">
                     {t.corto}
-                    {objetivo && (
-                      <span className="comida-objetivo">{describirPorciones(objetivo)}</span>
-                    )}
+                    {meta && <span className="comida-objetivo">{meta}</span>}
                   </span>
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <span className={`comida-plato${slot?.estado === 'omitido' ? ' comida-omitida' : ''}`}>
@@ -99,10 +99,11 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
                 </button>
               );
             })}
-            <div className="suplemento">
-              <Pill size={13} />
-              {SUPLEMENTO.nombre} · {SUPLEMENTO.momento.toLowerCase()} · {SUPLEMENTO.cantidad}
-            </div>
+            {pie && (
+              <div className="suplemento">
+                <Pill size={13} />{pie}
+              </div>
+            )}
           </section>
         );
       })}

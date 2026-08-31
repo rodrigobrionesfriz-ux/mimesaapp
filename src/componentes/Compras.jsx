@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { Check } from 'lucide-react';
-import { TIPOS, iso, categoria } from '../utiles';
+import { iso, categoria } from '../utiles';
 import { Vacio } from './Comunes';
 
-export default function Compras({ fechas, plan, porId, compras, onMarcar }) {
+export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos }) {
   const lista = useMemo(() => {
     const m = {};
     for (const f of fechas.map(iso)) {
       const dia = plan[f];
       if (!dia) continue;
-      for (const t of TIPOS) {
+      for (const t of tipos) {
         const r = porId[dia[t.k]?.id];
         if (!r) continue;
         for (const ing of r.ing) {
@@ -20,7 +20,7 @@ export default function Compras({ fechas, plan, porId, compras, onMarcar }) {
       }
     }
     return m;
-  }, [fechas, plan, porId]);
+  }, [fechas, plan, porId, tipos]);
 
   const cats = Object.keys(lista).sort();
   if (!cats.length) {

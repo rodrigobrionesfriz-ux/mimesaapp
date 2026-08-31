@@ -10,7 +10,7 @@ const FILTROS = [
   ['todas', 'Todas'], ['propias', 'Mías'],
   ['desayuno', 'Desayunos'], ['colacion_am', 'Colación AM'], ['almuerzo', 'Almuerzos'],
   ['colacion_pm', 'Colación PM'], ['cena', 'Once / cena'], ['colacion_opcional', 'Opcional'],
-  ['oculta', 'Con legumbre oculta'], ['rapida', '20 min o menos'],
+  ['hija', 'De la hija'], ['oculta', 'Con legumbre oculta'], ['rapida', '20 min o menos'],
 ];
 
 const EN_BLANCO = {
@@ -36,6 +36,7 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
   const visibles = recetas.filter((r) =>
     filtro === 'todas' ? true
       : filtro === 'propias' ? r.propia
+      : filtro === 'hija' ? (r.deLaHija || r.perfil === 'hija')
       : filtro === 'oculta' ? r.leg === 'oculta'
       : filtro === 'rapida' ? r.min <= 20
       : r.t === filtro);
@@ -158,6 +159,7 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
                 {r.leg === 'oculta' && <Etiqueta tono="marca"><Leaf size={11} />legumbre oculta</Etiqueta>}
                 {r.al?.length > 0 && <Etiqueta tono="negativa"><AlertTriangle size={11} />{r.al[0]}</Etiqueta>}
                 {r.propia && <Etiqueta tono="marca">mía</Etiqueta>}
+                {(r.deLaHija || r.perfil === 'hija') && <Etiqueta tono="positiva">de la hija</Etiqueta>}
               </span>
             </span>
             <ChevronRight size={17} style={{ color: 'var(--texto-tenue)', flexShrink: 0 }} />

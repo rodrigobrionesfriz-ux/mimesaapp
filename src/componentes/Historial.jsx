@@ -1,9 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { etiquetaTipo, fechaLegible } from '../utiles';
+import { fechaLegible } from '../utiles';
 import { Boton, Etiqueta, Kpi, Chips, Vacio } from './Comunes';
 
-const FILTROS = [['todos', 'Todo'], ['reemplazado', 'Cambios'], ['omitido', 'No preparados']];
+const FILTROS = [
+  ['todos', 'Todo'], ['adultos', 'Adultos'], ['hija', 'Hija'],
+  ['reemplazado', 'Cambios'], ['omitido', 'No preparados'],
+];
 
 export default function Historial({ historial, onVaciar }) {
   const [filtro, setFiltro] = useState('todos');
@@ -25,7 +28,11 @@ export default function Historial({ historial, onVaciar }) {
     };
   }, [historial]);
 
-  const visibles = historial.filter((h) => filtro === 'todos' || h.estado === filtro);
+  const visibles = historial.filter((h) => {
+    if (filtro === 'todos') return true;
+    if (filtro === 'adultos' || filtro === 'hija') return (h.perfil || 'adultos') === filtro;
+    return h.estado === filtro;
+  });
 
   return (
     <>
@@ -82,7 +89,8 @@ export default function Historial({ historial, onVaciar }) {
               <div className="tarjeta-cuerpo" style={{ padding: 13 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 6 }}>
                   <span className="dato" style={{ fontSize: 12 }}>
-                    {fechaLegible(h.fecha)} · {etiquetaTipo(h.tipo)}
+                    {fechaLegible(h.fecha)} · {h.tipoLabel || h.tipo}
+                    {h.perfil === 'hija' && ' · hija'}
                   </span>
                   {h.estado === 'omitido'
                     ? <Etiqueta tono="negativa">no se preparó</Etiqueta>

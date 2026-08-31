@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { MESES, TIPOS, iso, lunesDe, sumarDias } from '../utiles';
+import { MESES, iso, lunesDe, sumarDias } from '../utiles';
 import { semanasEnRango } from '../datos/nube';
 import { Kpi } from './Comunes';
 
-export default function Mes({ hogarId }) {
+export default function Mes({ hogarId, coleccion = 'semanas', tipos }) {
   const [ref, setRef] = useState(() => { const d = new Date(); d.setDate(1); return d; });
   const [dias, setDias] = useState({});
   const [cargando, setCargando] = useState(true);
@@ -18,13 +18,13 @@ export default function Mes({ hogarId }) {
       setCargando(true);
       const desde = iso(lunesDe(new Date(anio, mes, 1)));
       const hasta = iso(sumarDias(new Date(anio, mes + 1, 0), 1));
-      const semanas = await semanasEnRango(hogarId, desde, hasta).catch(() => []);
+      const semanas = await semanasEnRango(hogarId, desde, hasta, coleccion).catch(() => []);
       if (!vivo) return;
       const acum = {};
       for (const s of semanas) {
         for (const [fecha, dia] of Object.entries(s.plan || {})) {
           let p = 0, c = 0, r = 0, o = 0;
-          for (const t of TIPOS) {
+          for (const t of tipos) {
             const sl = dia[t.k];
             if (!sl) continue;
             p++;
@@ -39,7 +39,7 @@ export default function Mes({ hogarId }) {
       setCargando(false);
     })();
     return () => { vivo = false; };
-  }, [hogarId, anio, mes]);
+  }, [hogarId, anio, mes, coleccion, tipos]);
 
   const primero = new Date(anio, mes, 1);
   const offset = (primero.getDay() + 6) % 7;
