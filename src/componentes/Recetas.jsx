@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, Clock, Leaf, ChevronRight, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { TIPOS, etiquetaTipo } from '../utiles';
+import { PLAN, describirPorciones } from '../datos/pauta';
 import { Boton, Etiqueta, Chips } from './Comunes';
 import Hoja from './Hoja';
 import DetalleReceta from './DetalleReceta';
 
 const FILTROS = [
-  ['todas', 'Todas'], ['propias', 'Mías'], ['desayuno', 'Desayunos'], ['colacion', 'Colaciones'],
-  ['almuerzo', 'Almuerzos'], ['cena', 'Cenas'],
+  ['todas', 'Todas'], ['propias', 'Mías'],
+  ['desayuno', 'Desayunos'], ['colacion_am', 'Colación AM'], ['almuerzo', 'Almuerzos'],
+  ['colacion_pm', 'Colación PM'], ['cena', 'Once / cena'], ['colacion_opcional', 'Opcional'],
   ['oculta', 'Con legumbre oculta'], ['rapida', '20 min o menos'],
 ];
 
-const EN_BLANCO = { n: '', t: 'almuerzo', min: '20', ing: '', pasos: '', truco: '', leg: false };
+const EN_BLANCO = {
+  n: '', t: 'almuerzo', min: '20', ing: '', pasos: '', truco: '', leg: false,
+  cer: '', pro: '', fru: '', lac: '', ver: '', arl: '',
+};
+
+const CAMPOS_PORCION = [
+  ['cer', 'Cereal'], ['pro', 'Proteína'], ['fru', 'Fruta'],
+  ['lac', 'Lácteo'], ['ver', 'Verduras'], ['arl', 'ARL'],
+];
 
 // La hija es alérgica al maní: ninguna receta puede entrar con él.
 const MANI = /man[íi]|cacahuat|cacahuet|peanut/i;
@@ -41,12 +51,19 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
       return;
     }
 
+    const porciones = {};
+    for (const [k] of CAMPOS_PORCION) {
+      const v = Number(nueva[k]);
+      if (v > 0) porciones[k] = v;
+    }
+
     setGuardando(true);
     await onAgregar({
       n: nueva.n.trim(),
       t: nueva.t,
       min: Number(nueva.min) || 20,
       leg: nueva.leg ? 'oculta' : null,
+      p: Object.keys(porciones).length ? porciones : null,
       ing,
       pasos: nueva.pasos.split('\n').map((x) => x.trim()).filter(Boolean),
       truco: nueva.truco.trim() || 'Receta propia de la familia.',
@@ -58,6 +75,7 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
   /* ---------------------- formulario de receta propia ---------------------- */
   if (nueva) {
     const set = (k) => (e) => setNueva({ ...nueva, [k]: e.target.value });
+    const objetivoTexto = describirPorciones(PLAN[nueva.t]?.objetivo) || 'lo que estimes';
     return (
       <>
         <h3 className="subtitulo">Agregar una receta de la casa</h3>
@@ -80,6 +98,20 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
         <textarea rows={5} placeholder="Pasos, uno por línea" value={nueva.pasos} onChange={set('pasos')} />
         <div className="espacio" />
         <input placeholder="Truco o nota (opcional)" value={nueva.truco} onChange={set('truco')} />
+        <div className="espacio" />
+        <div className="subtitulo" style={{ marginBottom: 4 }}>Porciones que aporta</div>
+        <p className="dato" style={{ fontSize: 12.5, marginBottom: 10 }}>
+          Según la guía de la nutricionista. La pauta de este tiempo pide {objetivoTexto}.
+        </p>
+        <div className="grilla-porciones">
+          {CAMPOS_PORCION.map(([k, l]) => (
+            <label key={k} className="campo-porcion">
+              <span>{l}</span>
+              <input type="number" min="0" step="0.5" inputMode="decimal"
+                value={nueva[k]} onChange={set(k)} placeholder="0" />
+            </label>
+          ))}
+        </div>
         <div className="espacio" />
         <label style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 14 }}>
           <input type="checkbox" style={{ width: 'auto' }} checked={nueva.leg}

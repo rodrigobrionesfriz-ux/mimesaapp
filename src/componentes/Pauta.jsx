@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText } from 'lucide-react';
+import { Upload, FileText, Pill, AlertTriangle } from 'lucide-react';
+import { TIPOS, etiquetaTipo } from '../utiles';
+import { PLAN, SUPLEMENTO, OBSERVACIONES, describirPorciones } from '../datos/pauta';
 import { Boton } from './Comunes';
 
 const CLAVE = /(desayuno|colaci|almuerzo|cena|once|porci|evitar|preferir|aumentar|reducir|lactosa|legumbre|fibra|prote|agua|az[úu]car|verdura|fruta|integral|sal\b|grasa)/i;
@@ -47,8 +49,64 @@ export default function Pauta({ pauta, onGuardar, onQuitar }) {
     <>
       <h3 className="subtitulo" style={{ marginBottom: 4 }}>Pauta de la nutricionista</h3>
       <p className="parrafo">
-        Sube el documento Word que entregó la nutricionista. Las indicaciones detectadas aparecerán
-        sobre el planificador semanal como referencia al armar los menús.
+        Esta es la planificación entregada en consulta. Toda la app está construida sobre ella:
+        los tiempos de comida, las porciones de cada grupo y el recetario.
+      </p>
+
+      <section className="tarjeta">
+        <div className="tarjeta-cabecera">
+          <h4 style={{ fontSize: 14 }}>Estructura del día</h4>
+          <span className="dato" style={{ fontSize: 11.5 }}>porciones por tiempo</span>
+        </div>
+        {TIPOS.map((t) => (
+          <div key={t.k} className="lista-item" style={{ alignItems: 'flex-start', flexDirection: 'column', gap: 3 }}>
+            <span style={{ fontWeight: 600 }}>{etiquetaTipo(t.k)}</span>
+            <span style={{ color: 'var(--marca)', fontSize: 13.5 }}>
+              {describirPorciones(PLAN[t.k]?.objetivo)}
+            </span>
+            <span className="dato" style={{ fontSize: 12.5 }}>Ej: {PLAN[t.k]?.ejemplo}</span>
+          </div>
+        ))}
+      </section>
+
+      <div className="espacio" />
+      <div className="tarjeta">
+        <div className="tarjeta-cuerpo" style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: 13 }}>
+          <Pill size={16} style={{ color: 'var(--marca)', flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 600 }}>{SUPLEMENTO.nombre}</div>
+            <div className="dato" style={{ fontSize: 13 }}>
+              {SUPLEMENTO.momento} · {SUPLEMENTO.cantidad} · {SUPLEMENTO.frecuencia.toLowerCase()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="espacio" />
+      <div className="alerta alerta-error" style={{ display: 'flex', gap: 9, alignItems: 'flex-start' }}>
+        <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+        <span>
+          Las porciones de esta pauta están calculadas para una sola persona adulta. No las apliques
+          a la hija de 3 años ni asumas que sirven igual para los dos adultos: eso hay que preguntarlo
+          en la próxima consulta.
+        </span>
+      </div>
+
+      <div className="espacio" />
+      <section className="tarjeta">
+        <div className="tarjeta-cabecera"><h4 style={{ fontSize: 14 }}>Observaciones de la consulta</h4></div>
+        <div className="tarjeta-cuerpo">
+          {OBSERVACIONES.map((o, i) => (
+            <p key={i} style={{ margin: '0 0 10px', fontSize: 14 }}>· {o}</p>
+          ))}
+        </div>
+      </section>
+
+      <div className="espacio" />
+      <h4 className="subtitulo" style={{ marginBottom: 4 }}>Documento de respaldo</h4>
+      <p className="parrafo">
+        Si la nutricionista entrega una versión nueva en Word, súbela aquí. Las indicaciones que se
+        detecten aparecerán sobre el planificador semanal.
       </p>
 
       <input ref={entrada} type="file" accept=".docx" onChange={subir} hidden />

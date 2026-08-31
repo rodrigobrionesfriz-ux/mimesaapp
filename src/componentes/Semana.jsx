@@ -1,6 +1,7 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Sparkles, Clock, Leaf, Check, Replace, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, Clock, Leaf, Check, Replace, X, Pill } from 'lucide-react';
 import { TIPOS, DIAS, iso, sumarDias, lunesDe, fechaCorta } from '../utiles';
+import { PLAN, SUPLEMENTO, describirPorciones } from '../datos/pauta';
 import { Boton, Etiqueta, Vacio } from './Comunes';
 
 export default function Semana({ inicio, setInicio, fechas, plan, porId, generar, abrir, pauta, generando }) {
@@ -38,8 +39,8 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
       </div>
 
       {pauta?.pautas?.length > 0 && (
-        <div className="nota" style={{ marginBottom: 16 }}>
-          <div className="nota-titulo">De la pauta de la nutricionista</div>
+        <div className="nota" style={{ marginBottom: 14 }}>
+          <div className="nota-titulo">Del documento cargado</div>
           {pauta.pautas.slice(0, 3).map((p, i) => <div key={i}>· {p}</div>)}
         </div>
       )}
@@ -73,9 +74,15 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
             {TIPOS.map((t) => {
               const slot = dia?.[t.k];
               const r = slot ? porId[slot.id] : null;
+              const objetivo = PLAN[t.k]?.objetivo;
               return (
                 <button key={t.k} className="comida" onClick={() => abrir(fk, t.k)}>
-                  <span className="comida-tipo">{t.label}</span>
+                  <span className="comida-tipo">
+                    {t.corto}
+                    {objetivo && (
+                      <span className="comida-objetivo">{describirPorciones(objetivo)}</span>
+                    )}
+                  </span>
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <span className={`comida-plato${slot?.estado === 'omitido' ? ' comida-omitida' : ''}`}>
                       {r ? r.n : '—'}
@@ -92,6 +99,10 @@ export default function Semana({ inicio, setInicio, fechas, plan, porId, generar
                 </button>
               );
             })}
+            <div className="suplemento">
+              <Pill size={13} />
+              {SUPLEMENTO.nombre} · {SUPLEMENTO.momento.toLowerCase()} · {SUPLEMENTO.cantidad}
+            </div>
           </section>
         );
       })}
