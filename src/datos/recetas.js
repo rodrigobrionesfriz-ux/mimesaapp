@@ -1,9 +1,12 @@
-// Recetario base para: esposo 43, esposa 40 (intolerante a la lactosa),
-// hija 3 años (rechaza legumbres visibles).
+// Recetario base de la familia.
 //
-// Todas las preparaciones están resueltas sin lactosa.
+// Restricciones aplicadas a TODAS las recetas:
+//   · Sin lactosa (se usa bebida vegetal, yogur sin lactosa o queso madurado).
+//   · Sin maní ni derivados: la hija es alérgica. Ninguna receta lo contiene.
+//
 // leg: 'oculta'  -> lleva legumbre camuflada, apta para la hija
 // leg: null      -> sin legumbre
+// al             -> alérgenos presentes que conviene advertir (ej: frutos secos)
 // min            -> minutos totales de preparación
 // Cantidades pensadas para 3 personas (a la hija sírvele cerca de un tercio del plato adulto).
 
@@ -30,9 +33,9 @@ export const RECETARIO = [
     pasos: ['Servir el yogur en bowls.', 'Agregar fruta picada, granola y chía.'],
     truco: 'Arma los frascos la noche anterior y guarda la granola aparte para que no se ablande.' },
   { id: 'd6', n: 'Batido verde de plátano y espinaca', t: 'desayuno', min: 5, leg: null,
-    ing: ['1 plátano', 'Puñado de espinaca', '1 taza bebida vegetal', '2 cdas avena', '1 cdta mantequilla de maní'],
+    ing: ['1 plátano', 'Puñado de espinaca', '1 taza bebida vegetal', '2 cdas avena', '1 cda linaza molida'],
     pasos: ['Licuar todo 1 minuto.', 'Servir de inmediato bien frío.'],
-    truco: 'Con plátano congelado queda helado y la hija no percibe la espinaca.' },
+    truco: 'Con plátano congelado queda helado y la hija no percibe la espinaca. La linaza da cuerpo sin usar maní.' },
   { id: 'd7', n: 'Tostadas francesas con bebida vegetal', t: 'desayuno', min: 12, leg: null,
     ing: ['6 rebanadas de pan', '3 huevos', '1/2 taza bebida de avena', 'Canela', 'Vainilla'],
     pasos: ['Batir huevos con la bebida vegetal, canela y vainilla.', 'Remojar el pan por ambos lados.', 'Dorar en sartén con poco aceite.'],
@@ -51,18 +54,18 @@ export const RECETARIO = [
     truco: 'Los quesos madurados tienen muy poca lactosa y suelen tolerarse bien; parte con poca cantidad para confirmar.' },
 
   /* ---------------------------- COLACIONES ---------------------------- */
-  { id: 'c1', n: 'Manzana en gajos con mantequilla de maní', t: 'colacion', min: 3, leg: null,
-    ing: ['2 manzanas', 'Mantequilla de maní sin azúcar'],
-    pasos: ['Cortar en gajos y servir con la mantequilla de maní para untar.'],
-    truco: 'Un chorrito de limón evita que se oxide si va en la lonchera.' },
+  { id: 'c1', n: 'Manzana asada con canela y avena', t: 'colacion', min: 15, leg: null,
+    ing: ['2 manzanas', 'Canela', '2 cdas avena', 'Miel', 'Pasas'],
+    pasos: ['Descorazonar las manzanas y rellenar con avena, pasas y canela.', 'Hornear 12 min a 180°C hasta que estén blandas.', 'Servir tibias con un hilo de miel.'],
+    truco: 'Reemplaza a la clásica manzana con mantequilla de maní, que queda descartada por la alergia.' },
   { id: 'c2', n: 'Bastones de verdura con dip rosado', t: 'colacion', min: 10, leg: 'oculta',
     ing: ['1 taza garbanzos cocidos', '1 betarraga chica cocida', 'Jugo de limón', 'Aceite de oliva', 'Zanahoria y pepino'],
     pasos: ['Licuar garbanzos con betarraga, limón, aceite y sal hasta que quede liso.', 'Cortar las verduras en bastones y servir con el dip.'],
     truco: 'La betarraga tiñe el hummus de rosado fuerte. Preséntalo como salsa de princesa y desaparece el garbanzo.' },
-  { id: 'c3', n: 'Mix de frutos secos y fruta deshidratada', t: 'colacion', min: 2, leg: null,
+  { id: 'c3', n: 'Mix de frutos secos y fruta deshidratada', t: 'colacion', min: 2, leg: null, al: ['frutos secos'],
     ing: ['Almendras', 'Nueces', 'Pasas', 'Damascos deshidratados'],
     pasos: ['Mezclar y porcionar en bolsitas individuales.'],
-    truco: 'Para la hija muele los frutos secos: enteros son riesgo de atoro a los 3 años.' },
+    truco: 'Colación para los adultos. Compra frutos secos envasados que declaren no compartir línea con maní, y sírvela lejos del plato de la hija.' },
   { id: 'c4', n: 'Galletas de avena y plátano', t: 'colacion', min: 20, leg: null,
     ing: ['2 plátanos maduros', '1 1/2 taza avena', 'Pasas', 'Canela'],
     pasos: ['Moler el plátano y mezclar con la avena, pasas y canela.', 'Formar montoncitos en la lata.', 'Hornear 15 min a 180°C.'],
