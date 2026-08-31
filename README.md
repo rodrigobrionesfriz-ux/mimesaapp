@@ -21,6 +21,9 @@ En la [consola de Firebase](https://console.firebase.google.com), proyecto `mime
 
 **a) Activar el inicio de sesión con Google**
 Compilación → Authentication → Sign-in method → habilitar **Google** → guardar.
+Google es el único método de acceso de la app: no hay correo/contraseña ni acceso anónimo,
+así que no habilites nada más. La app intenta primero con ventana emergente y, si el navegador
+la bloquea (típico en la PWA instalada en iPhone), reintenta redirigiendo la pestaña.
 
 **b) Autorizar el dominio de GitHub Pages**
 Authentication → Settings → Authorized domains → **Add domain** → `TU-USUARIO.github.io`.
