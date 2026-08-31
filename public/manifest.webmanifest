@@ -1,7 +1,7 @@
 {
-  "name": "Mi Mesa — plan de comidas familiar",
-  "short_name": "Mi Mesa",
-  "description": "Planificacion de desayuno, colacion, almuerzo y cena con registro de lo sugerido frente a lo realmente preparado.",
+  "name": "Mi minuta familiar",
+  "short_name": "Mi minuta",
+  "description": "Minuta familiar de desayuno, colacion, almuerzo y cena, con registro de lo sugerido frente a lo realmente preparado.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

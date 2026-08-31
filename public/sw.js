@@ -1,9 +1,9 @@
-// Service worker de Mi Mesa.
+// Service worker de Mi minuta familiar.
 // Estrategia: la navegación intenta la red y cae al caché si no hay señal;
 // los recursos estáticos se sirven del caché y se refrescan en segundo plano.
 // Los datos de Firestore NO pasan por aquí: los maneja la caché propia de Firebase.
 
-const VERSION = 'mimesa-v1';
+const VERSION = 'mimesa-v2';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
