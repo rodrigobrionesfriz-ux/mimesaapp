@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 
 import { RECETARIO } from './datos/recetas';
+import { RECETARIO_ALIMENTARTE } from './datos/alimentarte';
 import { PLAN, SUPLEMENTO, describirPorciones } from './datos/pauta';
 import { TIPOS_HIJA, PLAN_HIJA, RECETARIO_HIJA } from './datos/hija';
 import { TIPOS, iso, sumarDias, lunesDe, barajar } from './utiles';
@@ -115,14 +116,19 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
     ? 'Agua a libre demanda entre comidas'
     : `${SUPLEMENTO.nombre} · ${SUPLEMENTO.momento.toLowerCase()} · ${SUPLEMENTO.cantidad}`;
 
-  const base = esHija ? RECETARIO_HIJA : RECETARIO;
+  const base = esHija ? RECETARIO_HIJA : [...RECETARIO, ...RECETARIO_ALIMENTARTE];
   const recetas = useMemo(
     () => [...base, ...propias.filter((r) => (r.perfil === 'hija') === esHija)],
     [base, propias, esHija],
   );
   const porId = useMemo(() => Object.fromEntries(recetas.map((r) => [r.id, r])), [recetas]);
   const todasLasRecetas = useMemo(
-    () => [...RECETARIO, ...RECETARIO_HIJA.map((r) => ({ ...r, deLaHija: true })), ...propias],
+    () => [
+      ...RECETARIO,
+      ...RECETARIO_ALIMENTARTE,
+      ...RECETARIO_HIJA.map((r) => ({ ...r, deLaHija: true })),
+      ...propias,
+    ],
     [propias],
   );
   const fechas = useMemo(() => Array.from({ length: 7 }, (_, i) => sumarDias(inicio, i)), [inicio]);

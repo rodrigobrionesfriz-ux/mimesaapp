@@ -39,7 +39,14 @@ export const barajar = (arr) => {
 export const diaVacio = () =>
   Object.fromEntries(TIPOS.map((t) => [t.k, null]));
 
-export const etiquetaTipo = (k) => TIPOS.find((t) => t.k === k)?.label || k;
+// Categorías que no son un tiempo de comida y por eso no entran al planificador.
+export const EXTRAS = {
+  salsa: 'Salsa o aderezo',
+  base: 'Base o untable',
+  once: 'Once',
+};
+
+export const etiquetaTipo = (k) => TIPOS.find((t) => t.k === k)?.label || EXTRAS[k] || k;
 export const etiquetaCorta = (k) => TIPOS.find((t) => t.k === k)?.corto || k;
 
 // Agrupa ingredientes por pasillo de supermercado para la lista de compras.
