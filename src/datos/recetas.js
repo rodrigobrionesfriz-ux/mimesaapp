@@ -1,201 +1,341 @@
-// Recetario base de la familia.
+// Recetario de la familia, construido sobre la pauta de la nutricionista.
 //
-// Restricciones aplicadas a TODAS las recetas:
-//   · Sin lactosa (se usa bebida vegetal, yogur sin lactosa o queso madurado).
-//   · Sin maní ni derivados: la hija es alérgica. Ninguna receta lo contiene.
+// Cada receta declara las porciones que aporta (campo p), usando los grupos de la
+// Guía de porciones: cer cereal · pro proteína · fru fruta · lac lácteo ·
+// ver verduras · arl alimentos ricos en lípidos.
+// Las cantidades son PARA UN ADULTO. La app multiplica al mostrar la compra.
 //
-// leg: 'oculta'  -> lleva legumbre camuflada, apta para la hija
-// leg: null      -> sin legumbre
-// al             -> alérgenos presentes que conviene advertir (ej: frutos secos)
-// min            -> minutos totales de preparación
-// Cantidades pensadas para 3 personas (a la hija sírvele cerca de un tercio del plato adulto).
+// Restricciones aplicadas a todas las recetas:
+//   · Sin lactosa: bebida vegetal, yogur sin lactosa o queso madurado.
+//   · Sin maní: la hija es alérgica. Las recetas del recetario original de la
+//     nutricionista que llevaban mantequilla de maní están adaptadas.
+//
+// t   = tiempo de comida
+// leg = 'oculta' si lleva legumbre camuflada, apta para la hija
+// al  = alérgenos a advertir (por ejemplo frutos secos)
 
 export const RECETARIO = [
-  /* ---------------------------- DESAYUNOS ---------------------------- */
-  { id: 'd1', n: 'Avena con manzana rallada y canela', t: 'desayuno', min: 10, leg: null,
-    ing: ['1 taza avena', '2 tazas bebida de almendras', '1 manzana', 'Canela', 'Miel'],
-    pasos: ['Cocinar la avena con la bebida vegetal 5 min a fuego bajo.', 'Rallar la manzana e incorporar con canela.', 'Endulzar con un hilo de miel.'],
-    truco: 'Deja la avena remojando de noche y en la mañana solo la calientas.' },
-  { id: 'd2', n: 'Huevos revueltos con tomate y pan integral', t: 'desayuno', min: 10, leg: null,
-    ing: ['4 huevos', '1 tomate', 'Pan integral', 'Aceite de oliva', 'Sal'],
-    pasos: ['Saltear el tomate picado 2 min.', 'Agregar los huevos batidos y revolver a fuego bajo.', 'Servir sobre el pan tostado.'],
-    truco: 'Fuego bajo y retirar antes de que cuaje del todo: quedan cremosos sin nada de crema.' },
-  { id: 'd3', n: 'Panqueques de avena y plátano', t: 'desayuno', min: 15, leg: null,
-    ing: ['2 plátanos maduros', '2 huevos', '1 taza avena', 'Canela'],
-    pasos: ['Licuar todo hasta formar una mezcla espesa.', 'Cocinar porciones pequeñas en sartén antiadherente.', 'Voltear cuando burbujee la superficie.'],
-    truco: 'La masa dura 2 días en el refrigerador. Para la hija, hazlos del tamaño de su palma.' },
-  { id: 'd4', n: 'Tostadas con palta y huevo duro', t: 'desayuno', min: 12, leg: null,
-    ing: ['3 huevos', '1 palta', 'Pan de molde integral', 'Limón', 'Sal'],
-    pasos: ['Hervir los huevos 9 minutos.', 'Moler la palta con limón y sal.', 'Montar sobre el pan y coronar con huevo en rodajas.'],
-    truco: 'Hierve 6 huevos de una vez: los que sobran sirven de colación.' },
-  { id: 'd5', n: 'Yogur sin lactosa con fruta y granola', t: 'desayuno', min: 5, leg: null,
-    ing: ['Yogur sin lactosa', 'Fruta de estación', 'Granola sin azúcar', 'Semillas de chía'],
-    pasos: ['Servir el yogur en bowls.', 'Agregar fruta picada, granola y chía.'],
+  /* ============================== DESAYUNOS ==============================
+     Objetivo: 2 cereal + 2 proteína + 1 fruta + 1 lácteo                  */
+
+  { id: 'd1', n: 'Avena con manzana, canela y huevos revueltos', t: 'desayuno', min: 12, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['1 taza de avena', '1 taza de bebida de almendras', '2 huevos', '1 manzana', 'Canela'],
+    pasos: ['Cocinar la avena con la bebida vegetal 5 min a fuego bajo.', 'Rallar la manzana e incorporar con canela.', 'Revolver los huevos aparte y servir junto al bowl.'],
+    truco: 'Deja la avena remojando de noche: en la mañana solo la calientas y haces los huevos.' },
+
+  { id: 'd2', n: 'Pan integral con pasta de huevo y frutillas con yogur', t: 'desayuno', min: 12, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['2 rebanadas de pan integral', '2 huevos duros', '1 taza de frutillas', '1 yogur sin lactosa', 'Cilantro y limón'],
+    pasos: ['Moler los huevos con tenedor, sal, limón y cilantro.', 'Untar sobre el pan tostado.', 'Servir las frutillas picadas con el yogur.'],
+    truco: 'Es el desayuno de ejemplo de la pauta. No saques la yema: ahí está buena parte de la proteína y las vitaminas.' },
+
+  { id: 'd3', n: 'Panqueques de avena y plátano con yogur', t: 'desayuno', min: 15, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['1 plátano maduro', '2 huevos', '1 taza de avena', '1 yogur sin lactosa', 'Canela'],
+    pasos: ['Licuar el plátano con los huevos y la avena.', 'Cocinar porciones pequeñas en sartén antiadherente.', 'Servir con el yogur encima.'],
+    truco: 'La masa dura 2 días en el refrigerador. A la hija hazle panqueques del tamaño de su palma.' },
+
+  { id: 'd4', n: 'Tostadas con palta, huevo duro y fruta', t: 'desayuno', min: 12, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1, arl: 1 },
+    ing: ['2 rebanadas de pan integral', '2 huevos', '½ palta', '1 manzana o pera', '1 taza de bebida vegetal', 'Limón'],
+    pasos: ['Hervir los huevos 9 minutos.', 'Moler la palta con limón y sal, untar sobre el pan.', 'Coronar con el huevo en rodajas y servir con la fruta.'],
+    truco: 'Hierve 6 huevos de una vez: los que sobran resuelven la colación del día siguiente.' },
+
+  { id: 'd5', n: 'Yogur con granola, fruta y huevos duros', t: 'desayuno', min: 8, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['1 yogur sin lactosa', '½ taza de granola sin azúcar', '1 taza de frutos rojos', '2 huevos duros', 'Semillas de chía'],
+    pasos: ['Servir el yogur con la granola, la fruta y la chía.', 'Acompañar con los huevos duros.'],
     truco: 'Arma los frascos la noche anterior y guarda la granola aparte para que no se ablande.' },
-  { id: 'd6', n: 'Batido verde de plátano y espinaca', t: 'desayuno', min: 5, leg: null,
-    ing: ['1 plátano', 'Puñado de espinaca', '1 taza bebida vegetal', '2 cdas avena', '1 cda linaza molida'],
-    pasos: ['Licuar todo 1 minuto.', 'Servir de inmediato bien frío.'],
-    truco: 'Con plátano congelado queda helado y la hija no percibe la espinaca. La linaza da cuerpo sin usar maní.' },
-  { id: 'd7', n: 'Tostadas francesas con bebida vegetal', t: 'desayuno', min: 12, leg: null,
-    ing: ['6 rebanadas de pan', '3 huevos', '1/2 taza bebida de avena', 'Canela', 'Vainilla'],
-    pasos: ['Batir huevos con la bebida vegetal, canela y vainilla.', 'Remojar el pan por ambos lados.', 'Dorar en sartén con poco aceite.'],
-    truco: 'Usa pan del día anterior: absorbe mejor y no se deshace.' },
-  { id: 'd8', n: 'Porridge de quinoa con frutos rojos', t: 'desayuno', min: 20, leg: null,
-    ing: ['1 taza quinoa', '2 tazas bebida vegetal', 'Frutos rojos', 'Canela', 'Miel'],
-    pasos: ['Lavar la quinoa y cocer con la bebida vegetal 15 min.', 'Agregar canela y fruta al servir.'],
+
+  { id: 'd6', n: 'Batido verde con tostada de huevo', t: 'desayuno', min: 10, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['1 plátano', 'Puñado de espinaca', '1 taza de bebida vegetal', '2 cdas de avena', '2 rebanadas de pan integral', '2 huevos'],
+    pasos: ['Licuar plátano, espinaca, bebida vegetal y avena.', 'Revolver los huevos y montar sobre el pan tostado.'],
+    truco: 'Con plátano congelado el batido queda helado y la hija no percibe la espinaca.' },
+
+  { id: 'd7', n: 'Tostadas francesas con bebida vegetal y fruta', t: 'desayuno', min: 14, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['2 rebanadas de pan de molde', '2 huevos', '½ taza de bebida de avena', '1 taza de berries', '1 yogur sin lactosa', 'Canela y vainilla'],
+    pasos: ['Batir los huevos con la bebida vegetal, canela y vainilla.', 'Remojar el pan por ambos lados y dorar en sartén.', 'Servir con los berries y el yogur.'],
+    truco: 'La receta original de la nutricionista lleva mantequilla de maní encima; aquí va con yogur y fruta por la alergia.' },
+
+  { id: 'd8', n: 'Porridge de quinoa con frutos rojos y huevo', t: 'desayuno', min: 20, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
+    ing: ['1 ½ taza de quinoa cocida', '1 taza de bebida vegetal', '1 taza de frutos rojos', '2 huevos', 'Canela'],
+    pasos: ['Lavar la quinoa hasta que no haga espuma y cocer con la bebida vegetal 15 min.', 'Agregar canela y fruta.', 'Servir con los huevos a la copa.'],
     truco: 'Cocina el doble el domingo: se recalienta perfecto toda la semana.' },
-  { id: 'd9', n: 'Panqueques dulces de lenteja roja', t: 'desayuno', min: 15, leg: 'oculta',
-    ing: ['1 taza lenteja roja remojada', '2 huevos', '1 plátano', 'Canela', 'Vainilla'],
-    pasos: ['Licuar la lenteja escurrida con huevos, plátano y vainilla.', 'Cocinar como panqueques en sartén caliente.', 'Servir con fruta.'],
-    truco: 'La lenteja roja pierde el sabor terroso al licuarse con plátano. Es la puerta de entrada más fácil.' },
-  { id: 'd10', n: 'Huevo pochado sobre tostada con queso maduro', t: 'desayuno', min: 12, leg: null,
-    ing: ['3 huevos', 'Pan de masa madre', 'Queso parmesano o gouda maduro', 'Vinagre', 'Ciboulette'],
-    pasos: ['Pochar los huevos en agua con un chorro de vinagre, 3 min.', 'Tostar el pan y rallar el queso encima.', 'Coronar con el huevo.'],
-    truco: 'Los quesos madurados tienen muy poca lactosa y suelen tolerarse bien; parte con poca cantidad para confirmar.' },
 
-  /* ---------------------------- COLACIONES ---------------------------- */
-  { id: 'c1', n: 'Manzana asada con canela y avena', t: 'colacion', min: 15, leg: null,
-    ing: ['2 manzanas', 'Canela', '2 cdas avena', 'Miel', 'Pasas'],
-    pasos: ['Descorazonar las manzanas y rellenar con avena, pasas y canela.', 'Hornear 12 min a 180°C hasta que estén blandas.', 'Servir tibias con un hilo de miel.'],
-    truco: 'Reemplaza a la clásica manzana con mantequilla de maní, que queda descartada por la alergia.' },
-  { id: 'c2', n: 'Bastones de verdura con dip rosado', t: 'colacion', min: 10, leg: 'oculta',
-    ing: ['1 taza garbanzos cocidos', '1 betarraga chica cocida', 'Jugo de limón', 'Aceite de oliva', 'Zanahoria y pepino'],
-    pasos: ['Licuar garbanzos con betarraga, limón, aceite y sal hasta que quede liso.', 'Cortar las verduras en bastones y servir con el dip.'],
-    truco: 'La betarraga tiñe el hummus de rosado fuerte. Preséntalo como salsa de princesa y desaparece el garbanzo.' },
-  { id: 'c3', n: 'Mix de frutos secos y fruta deshidratada', t: 'colacion', min: 2, leg: null, al: ['frutos secos'],
-    ing: ['Almendras', 'Nueces', 'Pasas', 'Damascos deshidratados'],
-    pasos: ['Mezclar y porcionar en bolsitas individuales.'],
-    truco: 'Colación para los adultos. Compra frutos secos envasados que declaren no compartir línea con maní, y sírvela lejos del plato de la hija.' },
-  { id: 'c4', n: 'Galletas de avena y plátano', t: 'colacion', min: 20, leg: null,
-    ing: ['2 plátanos maduros', '1 1/2 taza avena', 'Pasas', 'Canela'],
-    pasos: ['Moler el plátano y mezclar con la avena, pasas y canela.', 'Formar montoncitos en la lata.', 'Hornear 15 min a 180°C.'],
-    truco: 'Dos ingredientes base, cero azúcar añadida, rinden para tres colaciones.' },
-  { id: 'c5', n: 'Brownie de porotos negros', t: 'colacion', min: 35, leg: 'oculta',
-    ing: ['1 1/2 taza porotos negros cocidos', '2 huevos', '1/2 taza cacao', '1/3 taza miel', '1 cdta vainilla'],
-    pasos: ['Licuar los porotos escurridos con huevos, cacao, miel y vainilla.', 'Verter en molde y hornear 25 min a 180°C.', 'Enfriar antes de cortar.'],
-    truco: 'Enjuaga los porotos hasta que el agua salga clara: ahí se va todo el sabor a legumbre.' },
-  { id: 'c6', n: 'Bolitas de dátil, avena y cacao', t: 'colacion', min: 15, leg: null,
-    ing: ['1 taza dátiles sin carozo', '1 taza avena', '2 cdas cacao', 'Coco rallado'],
-    pasos: ['Procesar dátiles con avena y cacao.', 'Formar bolitas y pasar por coco rallado.', 'Refrigerar 30 min.'],
-    truco: 'Duran 10 días en frasco cerrado en el refrigerador.' },
-  { id: 'c7', n: 'Fruta de estación con yogur sin lactosa', t: 'colacion', min: 5, leg: null,
-    ing: ['Fruta de estación', 'Yogur sin lactosa', 'Semillas de maravilla'],
-    pasos: ['Picar la fruta y mezclar con el yogur.', 'Espolvorear semillas.'],
-    truco: 'Rota la fruta cada semana para no aburrir el paladar de la niña.' },
-  { id: 'c8', n: 'Palomitas caseras con paprika', t: 'colacion', min: 8, leg: null,
-    ing: ['1/2 taza maíz para cabritas', 'Aceite', 'Paprika', 'Sal'],
-    pasos: ['Reventar el maíz en olla tapada con un poco de aceite.', 'Condimentar con paprika y sal.'],
-    truco: 'Hechas en olla salen a un tercio del precio de las de microondas y sin aditivos.' },
-  { id: 'c9', n: 'Huevo duro con tomate cherry', t: 'colacion', min: 10, leg: null,
-    ing: ['3 huevos', 'Tomates cherry', 'Sal', 'Orégano'],
-    pasos: ['Hervir los huevos 9 min y enfriar.', 'Servir con los cherry partidos y orégano.'],
-    truco: 'Colación de alta saciedad para los adultos entre almuerzo y cena.' },
-  { id: 'c10', n: 'Barritas horneadas de garbanzo y avena', t: 'colacion', min: 30, leg: 'oculta',
-    ing: ['1 taza garbanzos cocidos', '1 taza avena', '1 plátano', 'Miel', 'Chips de cacao'],
-    pasos: ['Procesar garbanzos con plátano y miel.', 'Mezclar con avena y chips, extender en molde.', 'Hornear 20 min a 180°C y cortar en barras.'],
-    truco: 'Se congelan porcionadas: sacas una en la mañana y a la tarde está lista.' },
+  { id: 'd9', n: 'Panqueques de lenteja roja con yogur y fruta', t: 'desayuno', min: 18, leg: 'oculta',
+    p: { cer: 1, pro: 2, fru: 1, lac: 1 },
+    ing: ['¾ taza de lenteja roja cocida', '2 huevos', '1 plátano', '1 yogur sin lactosa', 'Canela y vainilla'],
+    pasos: ['Licuar la lenteja escurrida con los huevos, el plátano y la vainilla.', 'Cocinar como panqueques en sartén caliente.', 'Servir con el yogur.'],
+    truco: 'La lenteja roja no necesita remojo y pierde el sabor terroso al licuarse con plátano. Es la puerta de entrada más fácil a las legumbres.' },
 
-  /* ---------------------------- ALMUERZOS ---------------------------- */
+  { id: 'd10', n: 'Omelette con champiñón, tomate cherry y pan', t: 'desayuno', min: 14, leg: null,
+    p: { cer: 2, pro: 2, fru: 1, lac: 1, ver: 1 },
+    ing: ['2 huevos', '¾ taza de champiñones', 'Tomates cherry', '2 rebanadas de pan integral', '1 yogur sin lactosa', '1 taza de frutillas'],
+    pasos: ['Saltear los champiñones y los cherry.', 'Verter los huevos batidos y cuajar el omelette.', 'Servir con el pan, el yogur y las frutillas.'],
+    truco: 'Otro de los desayunos de ejemplo de la pauta. Los champiñones suman verdura sin sentirse pesados en la mañana.' },
+
+  /* =========================== COLACIÓN DE LA MAÑANA ===========================
+     Objetivo: 1 fruta + 1 ARL                                                  */
+
+  { id: 'ca1', n: 'Manzana con almendras', t: 'colacion_am', min: 3, leg: null, al: ['frutos secos'],
+    p: { fru: 1, arl: 1 },
+    ing: ['1 manzana', '26 almendras'],
+    pasos: ['Cortar la manzana en gajos y acompañar con las almendras.'],
+    truco: 'Un chorrito de limón evita que la manzana se oxide si va en la lonchera. Para la hija, muele las almendras: enteras son riesgo de atoro a los 3 años.' },
+
+  { id: 'ca2', n: 'Plátano con nueces', t: 'colacion_am', min: 2, leg: null, al: ['frutos secos'],
+    p: { fru: 1, arl: 1 },
+    ing: ['½ plátano', '5 nueces'],
+    pasos: ['Servir el plátano en rodajas con las nueces picadas encima.'],
+    truco: 'Compra frutos secos envasados que declaren no compartir línea de producción con maní.' },
+
+  { id: 'ca3', n: 'Naranja con media palta y sal de mar', t: 'colacion_am', min: 4, leg: null,
+    p: { fru: 1, arl: 1 },
+    ing: ['1 naranja', '½ palta (3 cdas)', 'Sal de mar', 'Limón'],
+    pasos: ['Pelar la naranja en gajos.', 'Servir la palta con sal y unas gotas de limón.'],
+    truco: 'Opción sin frutos secos, la más segura para compartir el plato con la hija.' },
+
+  { id: 'ca4', n: 'Bastones de verdura con dip rosado y fruta', t: 'colacion_am', min: 10, leg: 'oculta',
+    p: { fru: 1, arl: 1, ver: 1, pro: 0.5 },
+    ing: ['¾ taza de garbanzos cocidos', '1 betarraga chica cocida', 'Zanahoria y pepino', '1 manzana', 'Aceite de oliva', 'Limón'],
+    pasos: ['Licuar los garbanzos con la betarraga, el limón, el aceite y sal hasta que quede liso.', 'Cortar las verduras en bastones.', 'Servir con la fruta aparte.'],
+    truco: 'La betarraga tiñe el hummus de rosado fuerte. Preséntalo como salsa de princesa y el garbanzo desaparece.' },
+
+  { id: 'ca5', n: 'Manzana asada con canela y nueces', t: 'colacion_am', min: 15, leg: null, al: ['frutos secos'],
+    p: { fru: 1, arl: 1 },
+    ing: ['1 manzana', '5 nueces', 'Canela'],
+    pasos: ['Descorazonar la manzana y rellenar con las nueces picadas y canela.', 'Hornear 12 min a 180 °C hasta que esté blanda.'],
+    truco: 'Reemplaza a la clásica manzana con mantequilla de maní, descartada por la alergia.' },
+
+  { id: 'ca6', n: 'Kiwi con almendras', t: 'colacion_am', min: 3, leg: null, al: ['frutos secos'],
+    p: { fru: 1, arl: 1 },
+    ing: ['2 kiwis', '26 almendras'],
+    pasos: ['Pelar los kiwis, cortar en rodajas y acompañar con las almendras.'],
+    truco: 'El kiwi aporta vitamina C, que mejora la absorción del hierro de las legumbres del almuerzo.' },
+
+  /* ============================== ALMUERZOS ==============================
+     Objetivo: 1 cereal + 2 proteína + mix verde (2 tazas mínimo)          */
+
   { id: 'a1', n: 'Espagueti con boloñesa de lenteja y carne', t: 'almuerzo', min: 35, leg: 'oculta',
-    ing: ['250 g carne molida', '1 taza lentejas cocidas', 'Salsa de tomate', 'Cebolla', 'Zanahoria', 'Espagueti'],
-    pasos: ['Licuar las lentejas con un poco de salsa hasta que no queden grumos.', 'Sofreír cebolla y zanahoria rallada, agregar la carne.', 'Incorporar el puré de lentejas y la salsa, cocer 15 min.', 'Servir sobre la pasta.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['¾ taza de espagueti cocido', '50 g de carne molida', '¾ taza de lentejas cocidas', 'Salsa de tomate', 'Cebolla y zanahoria', '2 tazas de ensalada verde'],
+    pasos: ['Licuar las lentejas con un poco de salsa hasta que no queden grumos.', 'Sofreír cebolla y zanahoria rallada, agregar la carne.', 'Incorporar el puré de lentejas y la salsa, cocer 15 min.', 'Servir sobre la pasta con la ensalada al lado.'],
     truco: 'Mitad carne, mitad lenteja licuada: rinde el doble y la textura es idéntica a la boloñesa clásica.' },
-  { id: 'a2', n: 'Albóndigas de pollo y garbanzo con puré', t: 'almuerzo', min: 40, leg: 'oculta',
-    ing: ['400 g pollo molido', '1 taza garbanzos cocidos', '1 huevo', 'Papas', 'Bebida vegetal', 'Ajo'],
-    pasos: ['Procesar los garbanzos hasta harina húmeda y mezclar con el pollo, huevo y ajo.', 'Formar albóndigas y hornear 20 min a 200°C.', 'Hacer puré de papas usando bebida vegetal en vez de leche.'],
+
+  { id: 'a2', n: 'Albóndigas de pollo y garbanzo con papas', t: 'almuerzo', min: 40, leg: 'oculta',
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de pollo molido', '¾ taza de garbanzos cocidos', '1 huevo', '1 papa cocida', 'Bebida vegetal', '2 tazas de ensalada'],
+    pasos: ['Procesar los garbanzos hasta harina húmeda y mezclar con el pollo, el huevo y ajo.', 'Formar albóndigas y hornear 20 min a 200 °C.', 'Hacer puré con la papa y bebida vegetal en vez de leche.'],
     truco: 'El garbanzo reemplaza al pan rallado y suma proteína sin cambiar el sabor.' },
+
   { id: 'a3', n: 'Pollo al horno con papas y ensalada chilena', t: 'almuerzo', min: 50, leg: null,
-    ing: ['Trutros de pollo', 'Papas', 'Tomate', 'Cebolla', 'Cilantro', 'Aceite de oliva'],
-    pasos: ['Aliñar el pollo y hornear con las papas en rodajas, 40 min a 200°C.', 'Preparar la ensalada con la cebolla desflemada en agua fría.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de pollo', '1 papa', 'Tomate y cebolla', 'Cilantro', 'Aceite de oliva'],
+    pasos: ['Aliñar el pollo y hornear con la papa en rodajas, 40 min a 200 °C.', 'Preparar la ensalada con la cebolla desflemada en agua fría.'],
     truco: 'Todo en una sola lata: menos loza y el jugo del pollo cocina las papas.' },
+
   { id: 'a4', n: 'Charquicán de zapallo y carne', t: 'almuerzo', min: 40, leg: null,
-    ing: ['300 g carne molida', 'Zapallo', 'Papas', 'Choclo', 'Porotos verdes', 'Cebolla'],
-    pasos: ['Sofreír cebolla y carne.', 'Agregar zapallo y papa en cubos con agua, cocer 25 min.', 'Moler grueso e incorporar choclo y porotos verdes.'],
-    truco: 'Un huevo frito encima lo convierte en plato único.' },
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de carne molida', '½ taza de zapallo', '1 papa', '½ taza de choclo', 'Porotos verdes', 'Cebolla'],
+    pasos: ['Sofreír la cebolla con la carne.', 'Agregar el zapallo y la papa en cubos con agua, cocer 25 min.', 'Moler grueso e incorporar el choclo y los porotos verdes.'],
+    truco: 'Un huevo frito encima lo convierte en plato único y suma la segunda porción de proteína.' },
+
   { id: 'a5', n: 'Arroz salteado con huevo y verduras', t: 'almuerzo', min: 20, leg: null,
-    ing: ['3 tazas arroz cocido', '3 huevos', 'Zanahoria', 'Arvejas', 'Cebollín', 'Salsa de soya'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['¾ taza de arroz cocido', '2 huevos', 'Zanahoria', 'Arvejas', 'Cebollín', 'Salsa de soya'],
     pasos: ['Saltear las verduras en sartén muy caliente.', 'Correr a un lado, cuajar los huevos y mezclar.', 'Agregar el arroz y la soya, saltear 3 min.'],
     truco: 'Arroz del día anterior, frío: es el secreto para que quede suelto.' },
+
   { id: 'a6', n: 'Tortilla de papa y zapallo italiano', t: 'almuerzo', min: 35, leg: null,
-    ing: ['5 huevos', '3 papas', '1 zapallo italiano', 'Cebolla', 'Aceite de oliva'],
-    pasos: ['Cocer las papas en láminas junto a la cebolla y el zapallo.', 'Mezclar con los huevos batidos.', 'Cuajar en sartén 6 min por lado.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['2 huevos', '1 papa', '1 zapallo italiano', 'Cebolla', '2 tazas de ensalada', 'Aceite de oliva'],
+    pasos: ['Cocer la papa en láminas junto a la cebolla y el zapallo.', 'Mezclar con los huevos batidos.', 'Cuajar en sartén 6 min por lado.'],
     truco: 'Fría o caliente funciona igual: la del almuerzo sirve de cena.' },
+
   { id: 'a7', n: 'Crema de zapallo y garbanzo con crutones', t: 'almuerzo', min: 30, leg: 'oculta',
-    ing: ['1/2 zapallo camote', '1 taza garbanzos cocidos', 'Cebolla', 'Caldo de verduras', 'Pan para crutones'],
-    pasos: ['Cocer el zapallo con la cebolla en el caldo, 20 min.', 'Agregar los garbanzos y licuar hasta que quede sedoso.', 'Dorar cubos de pan al horno y servir encima.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['½ taza de zapallo camote', '¾ taza de garbanzos cocidos', '1 huevo duro', 'Cebolla', 'Caldo de verduras', 'Pan para crutones', '1 taza de ensalada'],
+    pasos: ['Cocer el zapallo con la cebolla en el caldo, 20 min.', 'Agregar los garbanzos y licuar hasta que quede sedoso.', 'Dorar cubos de pan al horno y servir encima con el huevo picado.'],
     truco: 'El garbanzo licuado da la cremosidad que normalmente daría la crema de leche.' },
+
   { id: 'a8', n: 'Pastel de choclo simplificado', t: 'almuerzo', min: 50, leg: null,
-    ing: ['400 g carne molida', 'Cebolla', '4 tazas choclo', 'Albahaca', 'Pollo cocido', 'Aceitunas'],
-    pasos: ['Preparar el pino con cebolla y carne, condimentar con comino.', 'Licuar el choclo con albahaca y cocer hasta espesar.', 'Montar en fuente y gratinar 20 min.'],
-    truco: 'Sin leche en la pasta de choclo: usa el agua del propio choclo y queda igual de cremosa.' },
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['1 taza de choclo', '100 g de carne molida', '1 huevo duro', 'Cebolla', 'Albahaca', '2 tazas de ensalada'],
+    pasos: ['Preparar el pino con cebolla y carne, condimentar con comino.', 'Licuar el choclo con albahaca y cocer hasta espesar.', 'Montar en fuente con el huevo y gratinar 20 min.'],
+    truco: 'Sin leche en la pasta de choclo: usa el agua del propio choclo y queda igual de cremosa. El choclo cuenta como cereal, no como verdura.' },
+
   { id: 'a9', n: 'Nuggets de pollo y garbanzo al horno', t: 'almuerzo', min: 35, leg: 'oculta',
-    ing: ['400 g pechuga de pollo', '3/4 taza garbanzos cocidos', '1 huevo', 'Avena molida', 'Paprika'],
-    pasos: ['Procesar el pollo con los garbanzos y los condimentos.', 'Formar nuggets y pasar por avena molida.', 'Hornear 20 min a 200°C girando a la mitad.'],
-    truco: 'Congela crudos separados: salen del congelador directo al horno.' },
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de pechuga de pollo', '¾ taza de garbanzos cocidos', '1 huevo', '½ taza de avena molida', '2 tazas de ensalada'],
+    pasos: ['Procesar el pollo con los garbanzos y los condimentos.', 'Formar nuggets y pasar por la avena molida.', 'Hornear 20 min a 200 °C girando a la mitad.'],
+    truco: 'Congela crudos y separados: salen del congelador directo al horno.' },
+
   { id: 'a10', n: 'Fideos con salsa de tomate y atún', t: 'almuerzo', min: 20, leg: null,
-    ing: ['Fideos', '2 latas de atún', 'Salsa de tomate', 'Ajo', 'Orégano', 'Aceitunas'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['¾ taza de fideos cocidos', '1 taza de atún en agua', 'Salsa de tomate', 'Ajo y orégano', '2 tazas de ensalada'],
     pasos: ['Sofreír el ajo, agregar la salsa y el orégano.', 'Incorporar el atún escurrido, cocer 5 min.', 'Mezclar con los fideos.'],
     truco: 'El plato de emergencia: 20 minutos con despensa básica.' },
-  { id: 'a11', n: 'Hamburguesas de lenteja y carne', t: 'almuerzo', min: 30, leg: 'oculta',
-    ing: ['250 g carne molida', '1 taza lentejas cocidas', '1 huevo', 'Avena', 'Pan de hamburguesa', 'Tomate y lechuga'],
-    pasos: ['Moler las lentejas escurridas hasta pasta.', 'Mezclar con carne, huevo y avena, formar los medallones.', 'Dorar en sartén 4 min por lado.'],
-    truco: 'Escurre bien la lenteja o la mezcla queda blanda y no toma forma.' },
-  { id: 'a12', n: 'Pescado al horno con arroz y brócoli', t: 'almuerzo', min: 30, leg: null,
-    ing: ['3 filetes de merluza o salmón', 'Limón', 'Arroz', 'Brócoli', 'Aceite de oliva'],
-    pasos: ['Hornear el pescado con limón y aceite, 15 min a 200°C.', 'Cocer el arroz y el brócoli al vapor.'],
-    truco: 'Al pescado de la hija sácale toda espina y córtalo en cubos: lo come mejor en trozos que en filete.' },
-  { id: 'a13', n: 'Cazuela de pollo con zapallo y choclo', t: 'almuerzo', min: 45, leg: null,
-    ing: ['Presas de pollo', 'Zapallo', 'Papas', 'Choclo', 'Zanahoria', 'Arroz'],
-    pasos: ['Hervir el pollo con las verduras 30 min.', 'Agregar el arroz los últimos 15 min.', 'Servir con cilantro fresco.'],
-    truco: 'Cocina una olla grande: la cazuela del domingo es la cena del lunes.' },
-  { id: 'a14', n: 'Pizza casera con masa de garbanzo', t: 'almuerzo', min: 40, leg: 'oculta',
-    ing: ['1 taza harina de garbanzo', '1 taza harina común', 'Levadura', 'Salsa de tomate', 'Queso sin lactosa', 'Orégano'],
-    pasos: ['Amasar las harinas con levadura, agua tibia y sal. Reposar 20 min.', 'Estirar, cubrir con salsa y queso.', 'Hornear 12 min a 220°C.'],
-    truco: 'Mitad harina de garbanzo es el máximo que no se nota ni en sabor ni en textura.' },
-  { id: 'a15', n: 'Guiso de zapallo italiano con arroz', t: 'almuerzo', min: 30, leg: null,
-    ing: ['3 zapallos italianos', 'Cebolla', 'Tomate', 'Arroz', 'Huevo', 'Comino'],
-    pasos: ['Sofreír cebolla y tomate.', 'Agregar el zapallo en cubos, cocer 15 min.', 'Servir sobre arroz con huevo revuelto.'],
-    truco: 'Guiso liviano y barato para media semana.' },
 
-  /* ------------------------------- CENAS ------------------------------- */
-  { id: 'n1', n: 'Sopa crema de brócoli y papa', t: 'cena', min: 25, leg: null,
-    ing: ['1 brócoli', '2 papas', 'Cebolla', 'Caldo de verduras', 'Aceite de oliva'],
-    pasos: ['Cocer todo en el caldo 20 min.', 'Licuar hasta que quede sedoso.', 'Ajustar sal y servir.'],
-    truco: 'La papa aporta la cremosidad: no necesita nada de lácteo.' },
-  { id: 'n2', n: 'Wrap de pollo con palta y lechuga', t: 'cena', min: 15, leg: null,
-    ing: ['Tortillas de trigo', 'Pechuga de pollo cocida', 'Palta', 'Lechuga', 'Tomate', 'Limón'],
-    pasos: ['Desmenuzar el pollo y mezclar con palta y limón.', 'Armar los wraps con lechuga y tomate.'],
+  { id: 'a11', n: 'Hamburguesas de lenteja y carne', t: 'almuerzo', min: 30, leg: 'oculta',
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['50 g de carne molida', '¾ taza de lentejas cocidas', '1 huevo', 'Avena', '½ pan de hamburguesa', 'Tomate y lechuga'],
+    pasos: ['Moler las lentejas escurridas hasta pasta.', 'Mezclar con la carne, el huevo y la avena; formar los medallones.', 'Dorar en sartén 4 min por lado.'],
+    truco: 'Escurre muy bien la lenteja o la mezcla queda blanda y no toma forma.' },
+
+  { id: 'a12', n: 'Pescado al horno con arroz y brócoli', t: 'almuerzo', min: 30, leg: null,
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de merluza o salmón', '¾ taza de arroz cocido', '1 taza de brócoli', '1 taza de ensalada', 'Limón y aceite de oliva'],
+    pasos: ['Hornear el pescado con limón y aceite, 15 min a 200 °C.', 'Cocer el arroz y el brócoli al vapor.'],
+    truco: 'Al pescado de la hija sácale toda espina y córtalo en cubos: lo come mejor en trozos que en filete.' },
+
+  { id: 'a13', n: 'Cazuela de pollo con zapallo y choclo', t: 'almuerzo', min: 45, leg: null,
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['100 g de pollo', '½ taza de zapallo', '½ taza de choclo', 'Papa', 'Zanahoria', 'Cilantro'],
+    pasos: ['Hervir el pollo con las verduras 30 min.', 'Agregar arroz los últimos 15 min si se quiere más contundente.', 'Servir con cilantro fresco.'],
+    truco: 'Cocina una olla grande: la cazuela del domingo es la cena del lunes.' },
+
+  { id: 'a14', n: 'Pizza casera con masa de garbanzo', t: 'almuerzo', min: 40, leg: 'oculta',
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['½ taza de harina de garbanzo', '½ taza de harina integral', 'Levadura', 'Salsa de tomate', 'Queso sin lactosa', '2 tazas de ensalada'],
+    pasos: ['Amasar las harinas con levadura, agua tibia y sal. Reposar 20 min.', 'Estirar, cubrir con salsa y queso.', 'Hornear 12 min a 220 °C.'],
+    truco: 'Mitad harina de garbanzo es el máximo que no se nota ni en sabor ni en textura.' },
+
+  { id: 'a15', n: 'Ceviche de garbanzos con arroz', t: 'almuerzo', min: 20, leg: 'oculta',
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['¾ taza de garbanzos cocidos', '¼ taza de jugo de limón', 'Cebolla, pimentón rojo y cilantro', 'Zanahoria y tomate', '¾ taza de arroz cocido', '1 huevo duro'],
+    pasos: ['Picar todas las verduras en cubos pequeños.', 'Mezclar con los garbanzos, el limón, aceite y sal.', 'Reposar 1 hora en el refrigerador y servir con el arroz.'],
+    truco: 'Receta del recetario de la nutricionista. Para la hija, procesa los garbanzos y sírvelos como pasta para untar.' },
+
+  /* =========================== COLACIÓN DE LA TARDE ===========================
+     Objetivo: 1 fruta + 1 lácteo + ½ cereal                                    */
+
+  { id: 'cp1', n: 'Yogur con plátano y avena', t: 'colacion_pm', min: 4, leg: null,
+    p: { fru: 1, lac: 1, cer: 0.5 },
+    ing: ['1 yogur sin lactosa', '½ plátano', '2 cdas de avena o granola'],
+    pasos: ['Mezclar todo en un bowl y servir.'],
+    truco: 'Es la colación de ejemplo de la pauta. La más simple y la que menos se falla.' },
+
+  { id: 'cp2', n: 'Galletas de avena y plátano con yogur', t: 'colacion_pm', min: 20, leg: null,
+    p: { fru: 1, lac: 1, cer: 0.5 },
+    ing: ['1 plátano maduro', '¾ taza de avena', 'Pasas', '1 yogur sin lactosa', 'Canela'],
+    pasos: ['Moler el plátano y mezclar con la avena, las pasas y la canela.', 'Formar montoncitos en la lata y hornear 15 min a 180 °C.', 'Servir con el yogur.'],
+    truco: 'Dos ingredientes base y cero azúcar añadida. Rinden para tres colaciones.' },
+
+  { id: 'cp3', n: 'Brownie de porotos negros con yogur y fruta', t: 'colacion_pm', min: 35, leg: 'oculta',
+    p: { fru: 1, lac: 1, cer: 0.5, pro: 0.5 },
+    ing: ['¾ taza de porotos negros cocidos', '1 huevo', '¼ taza de cacao', '2 cdtas de miel', '1 yogur sin lactosa', '1 fruta'],
+    pasos: ['Licuar los porotos escurridos con el huevo, el cacao, la miel y vainilla.', 'Verter en molde y hornear 25 min a 180 °C.', 'Enfriar antes de cortar y servir con el yogur y la fruta.'],
+    truco: 'Enjuaga los porotos hasta que el agua salga clara: ahí se va todo el sabor a legumbre.' },
+
+  { id: 'cp4', n: 'Bolitas de dátil y cacao con yogur', t: 'colacion_pm', min: 15, leg: null,
+    p: { fru: 1, lac: 1, cer: 0.5 },
+    ing: ['½ taza de dátiles sin carozo', '½ taza de avena', '2 cdas de cacao', 'Coco rallado', '1 yogur sin lactosa'],
+    pasos: ['Procesar los dátiles con la avena y el cacao.', 'Formar bolitas y pasar por coco rallado.', 'Refrigerar 30 min y servir con el yogur.'],
+    truco: 'Duran 10 días en frasco cerrado en el refrigerador.' },
+
+  { id: 'cp5', n: 'Barritas de garbanzo y avena con yogur', t: 'colacion_pm', min: 30, leg: 'oculta',
+    p: { fru: 1, lac: 1, cer: 0.5, pro: 0.5 },
+    ing: ['¾ taza de garbanzos cocidos', '½ taza de avena', '1 plátano', 'Miel', 'Chips de cacao', '1 yogur sin lactosa'],
+    pasos: ['Procesar los garbanzos con el plátano y la miel.', 'Mezclar con la avena y los chips, extender en molde.', 'Hornear 20 min a 180 °C, cortar en barras y servir con el yogur.'],
+    truco: 'Se congelan porcionadas: sacas una en la mañana y a la tarde está lista.' },
+
+  { id: 'cp6', n: 'Fruta de estación con yogur y granola', t: 'colacion_pm', min: 5, leg: null,
+    p: { fru: 1, lac: 1, cer: 0.5 },
+    ing: ['1 fruta de estación', '1 yogur sin lactosa', '¼ taza de granola', 'Semillas de maravilla'],
+    pasos: ['Picar la fruta y mezclar con el yogur.', 'Agregar la granola y las semillas al momento de servir.'],
+    truco: 'Rota la fruta cada semana para no aburrir el paladar de la niña.' },
+
+  /* ================================= CENAS =================================
+     Objetivo: 1 cereal + 2 proteína + mix verde (2 tazas mínimo)             */
+
+  { id: 'n1', n: 'Wrap de pollo con palta y ensalada', t: 'cena', min: 15, leg: null,
+    p: { cer: 1, pro: 2, ver: 2, arl: 1 },
+    ing: ['1 tortilla grande', '100 g de pollo cocido', '½ palta', 'Lechuga y tomate', '1 taza de ensalada', 'Limón'],
+    pasos: ['Desmenuzar el pollo y mezclar con la palta y el limón.', 'Armar el wrap con lechuga y tomate.', 'Servir con la ensalada al lado.'],
     truco: 'Usa el pollo que sobró del almuerzo del día anterior.' },
+
+  { id: 'n2', n: 'Pan con pasta de atún y palta', t: 'cena', min: 12, leg: null,
+    p: { cer: 1, pro: 2, ver: 2, arl: 1 },
+    ing: ['2 rebanadas de pan de molde', '1 lata de atún en agua', '3 cdtas de palta', '2 tazas de ensalada variada'],
+    pasos: ['Escurrir el atún y molerlo con la palta y limón.', 'Untar sobre el pan.', 'Servir con la ensalada.'],
+    truco: 'Es una de las cenas de ejemplo de la pauta: se arma en 10 minutos después del trabajo.' },
+
   { id: 'n3', n: 'Revuelto de espinaca, huevo y papas', t: 'cena', min: 20, leg: null,
-    ing: ['4 huevos', 'Espinaca', '2 papas', 'Cebolla', 'Aceite de oliva'],
-    pasos: ['Dorar las papas en cubos con la cebolla.', 'Agregar la espinaca hasta que reduzca.', 'Incorporar los huevos y revolver.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['2 huevos', '2 tazas de espinaca', '1 papa', 'Cebolla', 'Aceite de oliva'],
+    pasos: ['Dorar la papa en cubos con la cebolla.', 'Agregar la espinaca hasta que reduzca.', 'Incorporar los huevos y revolver.'],
     truco: 'La espinaca picada muy fina desaparece entre la papa.' },
-  { id: 'n4', n: 'Ensalada tibia de quinoa, tomate y palta', t: 'cena', min: 25, leg: null,
-    ing: ['1 taza quinoa', 'Tomate', 'Palta', 'Pepino', 'Limón', 'Aceite de oliva'],
-    pasos: ['Lavar y cocer la quinoa 15 min.', 'Mezclar tibia con las verduras picadas.', 'Aliñar con limón y aceite.'],
+
+  { id: 'n4', n: 'Ensalada tibia de quinoa, tofu y palta', t: 'cena', min: 25, leg: null,
+    p: { cer: 1, pro: 2, ver: 2, arl: 1 },
+    ing: ['¾ taza de quinoa cocida', '2 rebanadas de tofu', 'Tomate, pepino y hojas verdes', '½ palta', 'Limón y aceite de oliva'],
+    pasos: ['Lavar y cocer la quinoa 15 min.', 'Sellar el tofu en la sartén con aceite de oliva.', 'Mezclar todo tibio y aliñar con limón.'],
     truco: 'Enjuaga la quinoa hasta que no haga espuma: así se le quita el amargor.' },
+
   { id: 'n5', n: 'Tortilla de acelga con pan', t: 'cena', min: 20, leg: null,
-    ing: ['1 atado de acelga', '4 huevos', 'Cebolla', 'Ajo', 'Pan'],
-    pasos: ['Cocer la acelga picada y escurrir bien.', 'Mezclar con huevo, cebolla y ajo.', 'Cuajar en sartén 5 min por lado.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['2 huevos', '2 tazas de acelga', 'Cebolla y ajo', '2 rebanadas de pan integral'],
+    pasos: ['Cocer la acelga picada y escurrir muy bien.', 'Mezclar con el huevo, la cebolla y el ajo.', 'Cuajar en sartén 5 min por lado.'],
     truco: 'Escurrir la acelga apretándola con las manos evita que la tortilla quede aguada.' },
+
   { id: 'n6', n: 'Croquetas de zapallo y lenteja al horno', t: 'cena', min: 35, leg: 'oculta',
-    ing: ['2 tazas zapallo cocido', '1 taza lentejas cocidas', '1 huevo', 'Avena molida', 'Nuez moscada'],
-    pasos: ['Moler el zapallo con las lentejas hasta pasta lisa.', 'Agregar huevo y avena hasta poder formar croquetas.', 'Hornear 20 min a 200°C.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['1 taza de zapallo cocido', '¾ taza de lentejas cocidas', '1 huevo', '½ taza de avena molida', '2 tazas de ensalada', 'Nuez moscada'],
+    pasos: ['Moler el zapallo con las lentejas hasta pasta lisa.', 'Agregar el huevo y la avena hasta poder formar croquetas.', 'Hornear 20 min a 200 °C.'],
     truco: 'El dulzor del zapallo tapa por completo la lenteja. Sírvelas con salsa de tomate para mojar.' },
-  { id: 'n7', n: 'Sándwich caliente de pavo con sopa de verduras', t: 'cena', min: 20, leg: null,
-    ing: ['Pan de molde', 'Pechuga de pavo', 'Tomate', 'Verduras surtidas', 'Caldo'],
-    pasos: ['Hervir las verduras picadas en el caldo 15 min.', 'Armar y dorar los sándwiches en sartén.'],
-    truco: 'Cena de viernes: rápida y sin loza.' },
+
+  { id: 'n7', n: 'Pizza rápida sobre tortilla', t: 'cena', min: 18, leg: null,
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['2 tortillas medianas', '100 g de pollo cocido', 'Queso sin lactosa', 'Salsa de tomate', 'Tomate y orégano', '1 taza de ensalada'],
+    pasos: ['Cubrir las tortillas con salsa, pollo y queso.', 'Hornear 8 min a 220 °C.', 'Servir con la ensalada.'],
+    truco: 'Otra de las cenas de ejemplo de la pauta, ideal para el viernes.' },
+
   { id: 'n8', n: 'Budín de zapallo italiano con lenteja', t: 'cena', min: 40, leg: 'oculta',
-    ing: ['3 zapallos italianos', '1 taza lentejas cocidas', '3 huevos', 'Cebolla', 'Avena'],
-    pasos: ['Rallar el zapallo y escurrir el agua.', 'Licuar las lentejas y mezclar con huevos, zapallo y avena.', 'Hornear 30 min a 180°C.'],
-    truco: 'Se corta en cuadros y sirve frío al día siguiente como colación.' },
-  { id: 'n9', n: 'Puré mixto de papa y arveja con huevo a la copa', t: 'cena', min: 25, leg: 'oculta',
-    ing: ['4 papas', '1 taza arvejas', '3 huevos', 'Bebida vegetal', 'Aceite de oliva'],
-    pasos: ['Cocer papas y arvejas juntas 18 min.', 'Moler todo con bebida vegetal hasta puré verde claro.', 'Servir con huevo a la copa.'],
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['2 zapallos italianos', '¾ taza de lentejas cocidas', '2 huevos', 'Cebolla', '½ taza de avena', '1 taza de ensalada'],
+    pasos: ['Rallar el zapallo y escurrir el agua.', 'Licuar las lentejas y mezclar con los huevos, el zapallo y la avena.', 'Hornear 30 min a 180 °C.'],
+    truco: 'Se corta en cuadros y sirve frío al día siguiente. Aparece como ejemplo de almuerzo en la pauta.' },
+
+  { id: 'n9', n: 'Puré mixto de papa y arveja con huevo', t: 'cena', min: 25, leg: 'oculta',
+    p: { cer: 1, pro: 2, ver: 2 },
+    ing: ['1 papa', '½ taza de arvejas', '2 huevos', 'Bebida vegetal', '2 tazas de ensalada'],
+    pasos: ['Cocer la papa y las arvejas juntas 18 min.', 'Moler todo con bebida vegetal hasta puré verde claro.', 'Servir con los huevos a la copa.'],
     truco: 'El color verde suave se vende como puré del bosque. La arveja es la legumbre más dulce y la mejor para empezar.' },
+
   { id: 'n10', n: 'Tacos de pollo con vegetales', t: 'cena', min: 25, leg: null,
-    ing: ['Tortillas de maíz', 'Pechuga de pollo', 'Pimentón', 'Cebolla', 'Palta', 'Limón'],
-    pasos: ['Saltear el pollo en tiras con pimentón y cebolla.', 'Calentar las tortillas.', 'Servir con palta y limón.'],
+    p: { cer: 1, pro: 2, ver: 2, arl: 1 },
+    ing: ['2 tortillas de maíz medianas', '100 g de pollo', 'Pimentón y cebolla', '½ palta', '1 taza de ensalada', 'Limón'],
+    pasos: ['Saltear el pollo en tiras con el pimentón y la cebolla.', 'Calentar las tortillas.', 'Servir con la palta y limón.'],
     truco: 'Deja que cada uno arme su taco: a los 3 años, poder elegir aumenta lo que come.' },
+
+  /* ========================= COLACIÓN OPCIONAL DE LA NOCHE =========================
+     Objetivo: 1 lácteo + ½ cereal                                                  */
+
+  { id: 'co1', n: 'Yogur proteico con avena', t: 'colacion_opcional', min: 3, leg: null,
+    p: { lac: 1, cer: 0.5 },
+    ing: ['1 yogur protein sin lactosa', '2 cdas de avena o granola'],
+    pasos: ['Mezclar y servir.'],
+    truco: 'Es la colación opcional de ejemplo de la pauta. Va bien junto con el omega 3 de antes de dormir.' },
+
+  { id: 'co2', n: 'Bebida vegetal tibia con canela y granola', t: 'colacion_opcional', min: 5, leg: null,
+    p: { lac: 1, cer: 0.5 },
+    ing: ['1 taza de bebida vegetal', '2 cdas de granola', 'Canela'],
+    pasos: ['Calentar la bebida vegetal con la canela.', 'Servir con la granola encima.'],
+    truco: 'Tibia y con canela funciona bien como ritual de cierre del día para la hija.' },
+
+  { id: 'co3', n: 'Yogur con chía y galletas de arroz', t: 'colacion_opcional', min: 3, leg: null,
+    p: { lac: 1, cer: 0.5 },
+    ing: ['1 yogur sin lactosa', '1 cdta de chía', '3 galletas de arroz'],
+    pasos: ['Mezclar la chía con el yogur y dejar reposar 5 min.', 'Acompañar con las galletas.'],
+    truco: 'La chía hidratada espesa el yogur y da más saciedad sin sumar porciones.' },
+
+  { id: 'co4', n: 'Avena remojada con bebida vegetal', t: 'colacion_opcional', min: 3, leg: null,
+    p: { lac: 1, cer: 0.5 },
+    ing: ['1 taza de bebida vegetal', '2 cdas de avena', 'Canela'],
+    pasos: ['Mezclar la avena con la bebida vegetal y dejar reposar 10 min.'],
+    truco: 'Si dejas dos frascos hechos, uno sirve de colación y el otro de base del desayuno.' },
 ];
