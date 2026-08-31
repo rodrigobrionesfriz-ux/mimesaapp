@@ -1,11 +1,11 @@
-# Mi Mesa
+# Mi minuta familiar
 
 App familiar para planificar desayuno, colación, almuerzo y cena, y registrar qué se preparó
 realmente frente a lo que estaba sugerido.
 
-Pensada para: esposo (43), esposa (40, intolerante a la lactosa) e hija (3 años, rechaza las
-legumbres a la vista). Las 45 recetas base están todas resueltas sin lactosa y 12 llevan
-legumbre camuflada.
+Restricciones aplicadas a todo el recetario: **sin lactosa** y **sin maní** (alergia). Las 45
+recetas base cumplen ambas; 12 llevan legumbre camuflada para que la hija las coma sin verlas.
+La única receta con frutos secos está marcada con una advertencia y es solo para los adultos.
 
 - **PWA**: se instala en el teléfono como una app más y funciona sin conexión.
 - **Firebase**: el plan se sincroniza entre los teléfonos de la casa en tiempo real.
@@ -74,13 +74,15 @@ ven y editan el mismo plan.
 | **Semana** | 7 días × 4 tiempos de comida. El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
 | **Mes** | Calendario con un punto por día según cuánto se cumplió, más el acumulado mensual. |
 | **Compras** | Lista de la semana agrupada por pasillo de supermercado, con marcado que se sincroniza entre teléfonos. |
-| **Recetas** | Las 45 base más las que agregue la familia. Filtros por tiempo de comida, legumbre oculta y duración. |
+| **Recetas** | Las 45 base más las que agregue la familia. Se tocan para ver ingredientes, pasos y truco. Filtros por tiempo de comida, propias, legumbre oculta y duración. El formulario rechaza cualquier receta que mencione maní. |
 | **Historial** | Cada discrepancia entre lo sugerido y lo real, con el motivo. Muestra por qué se cae el plan y qué platos se reemplazan más. |
 | **Pauta** | Sube el `.docx` de la nutricionista. Extrae el texto, detecta las indicaciones y las muestra sobre el planificador. |
 
 Al tocar cualquier comida se abre la receta completa y tres opciones de registro:
-*se preparó tal cual*, *preparé otra cosa* (con qué y por qué) o *no se preparó*.
-Solo las dos últimas generan una entrada en el historial.
+*se preparó tal cual*, *preparé otra cosa* o *no se preparó*. En la segunda, el reemplazo se
+elige desde una lista desplegable con todas las recetas cargadas, agrupadas por tiempo de
+comida, o desde la opción **Otra** para escribirlo a mano. Solo las dos últimas opciones
+generan una entrada en el historial.
 
 ## Estructura de datos en Firestore
 
