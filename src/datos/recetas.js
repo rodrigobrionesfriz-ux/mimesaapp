@@ -54,11 +54,6 @@ export const RECETARIO = [
     pasos: ['Licuar plátano, espinaca, bebida vegetal y avena.', 'Revolver los huevos y montar sobre el pan tostado.'],
     truco: 'Con plátano congelado el batido queda helado y la hija no percibe la espinaca.' },
 
-  { id: 'd7', n: 'Tostadas francesas con bebida vegetal y fruta', t: 'desayuno', min: 14, leg: null,
-    p: { cer: 2, pro: 2, fru: 1, lac: 1 },
-    ing: ['2 rebanadas de pan de molde', '2 huevos', '½ taza de bebida de avena', '1 taza de berries', '1 yogur sin lactosa', 'Canela y vainilla'],
-    pasos: ['Batir los huevos con la bebida vegetal, canela y vainilla.', 'Remojar el pan por ambos lados y dorar en sartén.', 'Servir con los berries y el yogur.'],
-    truco: 'La receta original de la nutricionista lleva mantequilla de maní encima; aquí va con yogur y fruta por la alergia.' },
 
   { id: 'd8', n: 'Porridge de quinoa con frutos rojos y huevo', t: 'desayuno', min: 20, leg: null,
     p: { cer: 2, pro: 2, fru: 1, lac: 1 },
@@ -204,11 +199,6 @@ export const RECETARIO = [
     pasos: ['Amasar las harinas con levadura, agua tibia y sal. Reposar 20 min.', 'Estirar, cubrir con salsa y queso.', 'Hornear 12 min a 220 °C.'],
     truco: 'Mitad harina de garbanzo es el máximo que no se nota ni en sabor ni en textura.' },
 
-  { id: 'a15', n: 'Ceviche de garbanzos con arroz', t: 'almuerzo', min: 20, leg: 'oculta',
-    p: { cer: 1, pro: 2, ver: 2 },
-    ing: ['¾ taza de garbanzos cocidos', '¼ taza de jugo de limón', 'Cebolla, pimentón rojo y cilantro', 'Zanahoria y tomate', '¾ taza de arroz cocido', '1 huevo duro'],
-    pasos: ['Picar todas las verduras en cubos pequeños.', 'Mezclar con los garbanzos, el limón, aceite y sal.', 'Reposar 1 hora en el refrigerador y servir con el arroz.'],
-    truco: 'Receta del recetario de la nutricionista. Para la hija, procesa los garbanzos y sírvelos como pasta para untar.' },
 
   /* =========================== COLACIÓN DE LA TARDE ===========================
      Objetivo: 1 fruta + 1 lácteo + ½ cereal                                    */
