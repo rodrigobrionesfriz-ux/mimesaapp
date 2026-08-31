@@ -118,51 +118,99 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 ::placeholder { color: var(--texto-tenue); }
 
 /* ---------- estructura ---------- */
-.app { min-height: 100dvh; padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+.app { min-height: 100dvh; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
 
 .shell {
   background: var(--shell-fondo);
   color: var(--shell-texto);
-  padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
+  padding: calc(12px + env(safe-area-inset-top)) 14px 12px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
 }
-.shell h1 { font-size: 19px; }
-.shell p { margin: 3px 0 0; font-size: 12.5px; color: var(--shell-texto-tenue); }
+.shell-titulo { flex: 1; min-width: 0; }
+.shell h1 { font-size: 18px; }
+.shell p {
+  margin: 2px 0 0; font-size: 12px; color: var(--shell-texto-tenue);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .shell-acciones { display: flex; gap: 6px; flex-shrink: 0; }
 .shell-boton {
   background: rgba(255, 255, 255, 0.12);
   border: none;
   color: var(--shell-texto);
-  width: 34px; height: 34px;
+  width: 36px; height: 36px;
   border-radius: 6px;
+  flex-shrink: 0;
   display: grid; place-items: center;
 }
 .shell-boton:active { background: rgba(255, 255, 255, 0.24); }
 
 .contenido { padding: 16px; max-width: 720px; margin: 0 auto; }
 
-/* ---------- barra de navegación inferior ---------- */
-.navbar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
-  display: flex;
+/* ---------- barra lateral de navegación ---------- */
+.velo-menu {
+  position: fixed; inset: 0; z-index: 39;
+  background: rgba(15, 22, 30, 0.5);
+  animation: aparecer .15s ease-out;
+}
+
+.lateral {
+  position: fixed; top: 0; bottom: 0; left: 0; z-index: 40;
+  width: 252px;
+  display: flex; flex-direction: column;
   background: var(--tarjeta);
-  border-top: 1px solid var(--borde);
-  padding-bottom: env(safe-area-inset-bottom);
+  border-right: 1px solid var(--borde);
+  box-shadow: var(--sombra-alta);
+  transform: translateX(-100%);
+  transition: transform .22s cubic-bezier(.2, .8, .3, 1);
+  visibility: hidden;
 }
-.navbar button {
-  flex: 1;
+.lateral-abierta { transform: none; visibility: visible; }
+
+.lateral-cabecera {
+  background: var(--shell-fondo);
+  color: var(--shell-texto);
+  padding: calc(12px + env(safe-area-inset-top)) 14px 12px 18px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: calc(60px + env(safe-area-inset-top));
+}
+.lateral-cabecera h2 { font-size: 17px; }
+
+.lateral-menu { flex: 1; overflow-y: auto; padding: 8px 0; }
+.lateral-item {
+  width: 100%;
+  display: flex; align-items: center; gap: 13px;
+  padding: 11px 18px;
   background: none; border: none;
-  padding: 8px 2px 9px;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  color: var(--texto-tenue);
-  font-size: 10.5px;
-  border-top: 2px solid transparent;
-  margin-top: -1px;
+  border-left: 3px solid transparent;
+  color: var(--texto);
+  font-size: 14.5px;
+  text-align: left;
 }
-.navbar button[aria-current='page'] { color: var(--marca); border-top-color: var(--marca); font-weight: 600; }
+.lateral-item:active { background: var(--tarjeta-hover); }
+.lateral-item[aria-current='page'] {
+  background: var(--marca-suave);
+  border-left-color: var(--marca);
+  color: var(--marca);
+  font-weight: 600;
+}
+.lateral-item svg { flex-shrink: 0; }
+
+.lateral-pie {
+  border-top: 1px solid var(--borde-sutil);
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  font-size: 12.5px; color: var(--texto-tenue);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* En pantalla ancha la barra queda fija y desaparece el botón de menú. */
+@media (min-width: 900px) {
+  .app { padding-left: 252px; }
+  .lateral { transform: none; visibility: visible; box-shadow: none; }
+  .velo-menu { display: none; }
+  .boton-menu { display: none; }
+}
 
 /* ---------- tarjetas ---------- */
 .tarjeta {
@@ -373,7 +421,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 
 .brindis {
   position: fixed; left: 50%; transform: translateX(-50%);
-  bottom: calc(84px + env(safe-area-inset-bottom));
+  bottom: calc(28px + env(safe-area-inset-bottom));
   z-index: 60;
   background: var(--shell-fondo); color: var(--shell-texto);
   padding: 9px 16px; border-radius: 999px; font-size: 13.5px;
