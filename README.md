@@ -6,8 +6,14 @@ realmente frente a lo que estaba sugerido.
 La app está construida sobre la pauta real de la nutricionista Francisca Fuentes Olave: sus seis
 tiempos de comida, sus porciones por grupo de alimentos y sus guías de meal prep y compras.
 
-Restricciones aplicadas a todo el recetario: **sin lactosa** y **sin maní** (alergia). Las 51
-recetas base cumplen ambas; 14 llevan legumbre camuflada para que la hija las coma sin verlas.
+Restricciones aplicadas a todo el recetario: **sin lactosa** y **sin maní** (alergia). El
+recetario tiene **113 preparaciones**: 49 propias de los adultos, 34 importadas del Recetario
+Saludable Alimentarte y 30 del plan de la hija. Todas cumplen ambas restricciones y 30 llevan
+legumbre camuflada.
+
+Las recetas importadas conservan su origen visible y las adaptaciones quedan anotadas en cada
+truco. Además de los tiempos de comida, hay dos categorías que no se planifican solas porque
+son componentes: **salsas y aderezos** (12) y **bases y untables** (8).
 Las recetas con frutos secos están marcadas con advertencia y son solo para los adultos.
 
 > **Sobre las porciones.** La pauta entregada en consulta está personalizada para una sola persona
@@ -96,6 +102,7 @@ ven y editan el mismo plan.
 | **Semana** | Dos planes independientes que se cambian con el selector de arriba: el de los adultos (6 tiempos de comida, con el objetivo de porciones de la pauta a la vista) y el de la hija (5 tiempos, con porciones y texturas de preescolar). El botón *Armar la semana* llena todo respetando: recetas cortas de lunes a viernes, y mínimo 4 preparaciones con legumbre camuflada. |
 | **Mes** | Calendario con un punto por día según cuánto se cumplió, más el acumulado mensual. |
 | **Compras** | Lista de la semana agrupada por pasillo de supermercado, con marcado que se sincroniza entre teléfonos. |
+| **Impresión** | Dos formatos. El póster semanal sale apaisado, con la semana completa en una tabla grande para pegar en el refrigerador; se imprime con el botón de impresora del planificador y respeta el perfil que estés viendo. La ficha de receta sale vertical, con ingredientes y pasos en dos columnas y letra grande para leerla mientras cocinas; el botón está dentro del detalle de cada receta. |
 | **Guía de la hija** | Su estructura de cinco tiempos, porciones medidas con sus manos, precauciones por la alergia al maní y por riesgo de atoro, y qué funciona para que coma a los 3 años. |
 | **Porciones** | Las equivalencias de la guía de la nutricionista, buscables. Además las guías de meal prep, conservación de alimentos, orden del refrigerador y recorrido del supermercado. |
 | **Recetas** | Las 51 base más las que agregue la familia. Se tocan para ver ingredientes, pasos y truco. Filtros por tiempo de comida, propias, legumbre oculta y duración. El formulario rechaza cualquier receta que mencione maní. |
@@ -129,10 +136,12 @@ src/
   estilos.css             paleta SAP Fiori (Quartz Light y Quartz Dark)
   utiles.js               fechas, tipos de comida, categorías de supermercado
   datos/pauta.js          la pauta, las equivalencias y las guías de la nutricionista
-  datos/recetas.js        las 51 recetas base de los adultos, con sus porciones
+  datos/recetas.js        las 49 recetas propias de los adultos, con sus porciones
+  datos/alimentarte.js    las 34 recetas importadas del Recetario Alimentarte
   datos/hija.js           el plan de la hija: estructura, porciones y sus 30 recetas
   datos/nube.js           hooks de Firestore en tiempo real
   componentes/            una vista por sección
+  componentes/Impresion.jsx  el póster semanal y la ficha de receta para papel
 public/
   manifest.webmanifest    metadatos de instalación
   sw.js                   service worker (funcionamiento sin conexión)
