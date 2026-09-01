@@ -1,11 +1,11 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Sparkles, Clock, Leaf, Check, Replace, X, Pill } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, Clock, Leaf, Check, Replace, X, Pill, Printer } from 'lucide-react';
 import { DIAS, iso, sumarDias, lunesDe, fechaCorta } from '../utiles';
 import { Boton, Etiqueta, Vacio } from './Comunes';
 
 export default function Semana({
   inicio, setInicio, fechas, plan, porId, generar, abrir, pauta, generando,
-  tipos, objetivo, pie, metaLegumbres = 4,
+  tipos, objetivo, pie, metaLegumbres = 4, onImprimir,
 }) {
   const hoy = iso(new Date());
   const vacia = Object.keys(plan).length === 0;
@@ -38,6 +38,12 @@ export default function Semana({
         <Boton chico variante="secundario" style={{ flex: '0 0 auto' }} onClick={() => setInicio(lunesDe(new Date()))}>
           Hoy
         </Boton>
+        {!vacia && (
+          <Boton chico variante="secundario" style={{ flex: '0 0 auto' }}
+            onClick={onImprimir} aria-label="Imprimir la semana">
+            <Printer size={15} />
+          </Boton>
+        )}
       </div>
 
       {pauta?.pautas?.length > 0 && (

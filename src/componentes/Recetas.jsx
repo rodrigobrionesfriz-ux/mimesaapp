@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Clock, Leaf, ChevronRight, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, Clock, Leaf, ChevronRight, AlertTriangle, ShieldCheck, Printer } from 'lucide-react';
 import { TIPOS, etiquetaTipo } from '../utiles';
 import { PLAN, describirPorciones } from '../datos/pauta';
 import { Boton, Etiqueta, Chips } from './Comunes';
@@ -27,7 +27,7 @@ const CAMPOS_PORCION = [
 // La hija es alérgica al maní: ninguna receta puede entrar con él.
 const MANI = /man[íi]|cacahuat|cacahuet|peanut/i;
 
-export default function Recetas({ recetas, onAgregar, onBorrar }) {
+export default function Recetas({ recetas, onAgregar, onBorrar, onImprimir }) {
   const [filtro, setFiltro] = useState('todas');
   const [nueva, setNueva] = useState(null);
   const [abierta, setAbierta] = useState(null);
@@ -176,6 +176,10 @@ export default function Recetas({ recetas, onAgregar, onBorrar }) {
           onCerrar={() => setAbierta(null)}
         >
           <DetalleReceta receta={abierta} />
+          <div className="espacio" />
+          <Boton bloque variante="secundario" onClick={() => onImprimir(abierta)}>
+            <Printer size={16} />Imprimir esta receta
+          </Boton>
           {abierta.propia && (
             <>
               <div className="espacio" />
