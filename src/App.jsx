@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Calendar, CalendarDays, ShoppingCart, BookOpen, History as HistoryIcon,
-  FileText, Scale, Baby, Sun, Moon, LogOut, Menu, X,
+  FileText, Scale, Baby, Printer, Sun, Moon, LogOut, Menu, X,
 } from 'lucide-react';
 
 import { RECETARIO } from './datos/recetas';
 import { RECETARIO_ALIMENTARTE } from './datos/alimentarte';
 import { PLAN, SUPLEMENTO, describirPorciones } from './datos/pauta';
 import { TIPOS_HIJA, PLAN_HIJA, RECETARIO_HIJA } from './datos/hija';
-import { TIPOS, iso, sumarDias, lunesDe, barajar } from './utiles';
+import { TIPOS, etiquetaTipo, iso, sumarDias, lunesDe, barajar } from './utiles';
 import {
   useSesion, useHogar, useSemana, useHistorial, useRecetasPropias, usePauta,
 } from './datos/nube';
@@ -22,6 +22,7 @@ import Historial from './componentes/Historial';
 import Pauta from './componentes/Pauta';
 import Porciones from './componentes/Porciones';
 import GuiaHija from './componentes/GuiaHija';
+import Impresion from './componentes/Impresion';
 import HojaComida from './componentes/HojaComida';
 
 const SECCIONES = [
@@ -83,7 +84,29 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const [brindis, setBrindis] = useState(null);
   const [generando, setGenerando] = useState(false);
   const [perfil, setPerfil] = useState('adultos');
+  const [impresion, setImpresion] = useState(null);
   const anchaFija = usePantallaAncha();
+
+  // Al imprimir se inyecta la orientación correcta: el póster semanal va apaisado
+  // y la ficha de receta vertical. Se lanza el diálogo cuando el DOM ya se pintó.
+  useEffect(() => {
+    if (!impresion) return;
+    const estilo = document.createElement('style');
+    estilo.textContent = impresion.modo === 'semana'
+      ? '@page { size: A4 landscape; margin: 10mm; }'
+      : '@page { size: A4 portrait; margin: 14mm; }';
+    document.head.appendChild(estilo);
+
+    const cerrar = () => setImpresion(null);
+    window.addEventListener('afterprint', cerrar);
+    const t = setTimeout(() => window.print(), 80);
+
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('afterprint', cerrar);
+      estilo.remove();
+    };
+  }, [impresion]);
 
   // Escape cierra el menú; en pantalla ancha nunca está en modo cajón.
   useEffect(() => {
@@ -232,7 +255,8 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const irA = (k) => { setSeccion(k); setMenuAbierto(false); };
 
   return (
-    <div className="app">
+    <>
+      <div className="app">
       {menuAbierto && <div className="velo-menu" onClick={() => setMenuAbierto(false)} />}
 
       <aside className={`lateral${menuAbierto ? ' lateral-abierta' : ''}`}
@@ -292,6 +316,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
             plan={semana.plan} porId={porId} generar={generar} generando={generando}
             abrir={(fecha, tipo) => setModal({ fecha, tipo })} pauta={esHija ? null : pauta}
             tipos={tipos} objetivo={objetivoDe} pie={pieDia} metaLegumbres={metaLegumbres}
+            onImprimir={() => setImpresion({ modo: 'semana' })}
           />
         )}
         {seccion === 'mes' && <Mes hogarId={hogarId} coleccion={coleccion} tipos={tipos} />}
@@ -300,7 +325,8 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
             compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} />
         )}
         {seccion === 'recetas' && (
-          <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar} />
+          <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar}
+            onImprimir={(receta) => setImpresion({ modo: 'receta', receta })} />
         )}
         {seccion === 'porciones' && <Porciones />}
         {seccion === 'hija' && <GuiaHija />}
@@ -329,8 +355,23 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
           fecha={modal.fecha} tipo={modal.tipo} slot={slotActivo}
           receta={porId[slotActivo?.id]} recetas={recetas} tipos={tipos}
           onCerrar={() => setModal(null)} onMarcar={marcar} onCambiar={cambiarSugerencia}
+          onImprimir={(receta) => setImpresion({ modo: 'receta', receta })}
         />
       )}
-    </div>
+      </div>
+
+      {impresion && (
+        <Impresion
+          modo={impresion.modo}
+          receta={impresion.receta}
+          etiqueta={impresion.receta ? etiquetaTipo(impresion.receta.t) : ''}
+          fechas={fechas} plan={semana.plan} porId={porId}
+          tipos={tipos} objetivo={objetivoDe}
+          titulo={esHija ? 'Plan de la hija, 3 años' : 'Plan de los adultos'}
+          pie={pieDia}
+        />
+      )}
+
+    </>
   );
 }
