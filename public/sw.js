@@ -3,7 +3,7 @@
 // los recursos estáticos se sirven del caché y se refrescan en segundo plano.
 // Los datos de Firestore NO pasan por aquí: los maneja la caché propia de Firebase.
 
-const VERSION = 'mimesa-v2';
+const VERSION = 'mimesa-v3';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
