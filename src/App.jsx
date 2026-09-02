@@ -322,7 +322,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
         {seccion === 'mes' && <Mes hogarId={hogarId} coleccion={coleccion} tipos={tipos} />}
         {seccion === 'compras' && (
           <Compras fechas={fechas} plan={semana.plan} porId={porId}
-            compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} />
+            compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} perfil={perfil} />
         )}
         {seccion === 'recetas' && (
           <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar}
