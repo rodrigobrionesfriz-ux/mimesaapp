@@ -139,6 +139,7 @@ src/
   datos/recetas.js        las 49 recetas propias de los adultos, con sus porciones
   datos/alimentarte.js    las 34 recetas importadas del Recetario Alimentarte
   datos/hija.js           el plan de la hija: estructura, porciones y sus 30 recetas
+  datos/ingredientes.js   interpreta y suma las cantidades para la lista de compras
   datos/nube.js           hooks de Firestore en tiempo real
   componentes/            una vista por sección
   componentes/Impresion.jsx  el póster semanal y la ficha de receta para papel
