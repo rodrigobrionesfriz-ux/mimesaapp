@@ -59,7 +59,7 @@ export const OBSERVACIONES = [
 
 export const GRUPOS = [
   {
-    k: 'cer', nombre: 'Cereales', color: 'var(--critico)',
+    k: 'cer', nombre: 'Cereales', color: 'var(--grupo-cereal)',
     items: [
       ['Pan hallulla o marraqueta', '½ unidad'],
       ['Pan de molde', '3 rebanadas'],
@@ -84,7 +84,7 @@ export const GRUPOS = [
     ],
   },
   {
-    k: 'pro', nombre: 'Proteínas: carnes, huevos y legumbres', color: 'var(--negativo)',
+    k: 'pro', nombre: 'Proteínas: carnes, huevos y legumbres', color: 'var(--grupo-proteina)',
     items: [
       ['Carne de vacuno, pollo, pavo', 'Palma de la mano (50 g)'],
       ['Pescado en general', 'Palma de la mano (50 g)'],
@@ -99,7 +99,7 @@ export const GRUPOS = [
     ],
   },
   {
-    k: 'ver', nombre: 'Verduras', color: 'var(--positivo)',
+    k: 'ver', nombre: 'Verduras', color: 'var(--grupo-verdura)',
     items: [
       ['Zanahoria, brócoli, coliflor, zapallo italiano, betarraga cruda', '1 taza'],
       ['Poroto verde, zapallo, betarraga cocida, berenjena, acelga, espinaca', '½ taza'],
@@ -112,7 +112,7 @@ export const GRUPOS = [
     ],
   },
   {
-    k: 'fru', nombre: 'Frutas', color: 'var(--marca)',
+    k: 'fru', nombre: 'Frutas', color: 'var(--grupo-fruta)',
     items: [
       ['Plátano', '½ unidad'],
       ['Manzana, pera, naranja, durazno, membrillo, pepino dulce', '1 unidad'],
@@ -125,7 +125,7 @@ export const GRUPOS = [
     ],
   },
   {
-    k: 'lac', nombre: 'Lácteos y bebidas vegetales', color: 'var(--marca)',
+    k: 'lac', nombre: 'Lácteos y bebidas vegetales', color: 'var(--grupo-lacteo)',
     items: [
       ['Leche sin lactosa, semi o descremada', '1 taza'],
       ['Bebida vegetal (soya, almendras, avena, coco)', '1 taza'],
@@ -137,7 +137,7 @@ export const GRUPOS = [
     ],
   },
   {
-    k: 'arl', nombre: 'ARL: alimentos ricos en lípidos', color: 'var(--critico)',
+    k: 'arl', nombre: 'ARL: alimentos ricos en lípidos', color: 'var(--grupo-grasa)',
     items: [
       ['Palta', '3 cdas (½ unidad)'],
       ['Aceitunas', '11 unidades'],
@@ -149,7 +149,7 @@ export const GRUPOS = [
     nota: 'El maní queda excluido de toda la pauta por la alergia de la hija.',
   },
   {
-    k: 'gra', nombre: 'Aceites y grasas', color: 'var(--texto-tenue)',
+    k: 'gra', nombre: 'Aceites y grasas', color: 'var(--grupo-grasa)',
     items: [
       ['Aceite de maravilla, soya u oliva', '4 cdtas'],
       ['Aceite de coco', '4 cdtas'],
