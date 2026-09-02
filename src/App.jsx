@@ -8,7 +8,7 @@ import { RECETARIO } from './datos/recetas';
 import { RECETARIO_ALIMENTARTE } from './datos/alimentarte';
 import { PLAN, SUPLEMENTO, describirPorciones } from './datos/pauta';
 import { TIPOS_HIJA, PLAN_HIJA, RECETARIO_HIJA } from './datos/hija';
-import { TIPOS, etiquetaTipo, iso, sumarDias, lunesDe, barajar } from './utiles';
+import { TIPOS, etiquetaTipo, iso, sumarDias, lunesDe, fechaCorta, barajar } from './utiles';
 import {
   useSesion, useHogar, useSemana, useHistorial, useRecetasPropias, usePauta,
 } from './datos/nube';
@@ -322,7 +322,9 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
         {seccion === 'mes' && <Mes hogarId={hogarId} coleccion={coleccion} tipos={tipos} />}
         {seccion === 'compras' && (
           <Compras fechas={fechas} plan={semana.plan} porId={porId}
-            compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} perfil={perfil} />
+            compras={semana.compras} onMarcar={marcarCompra} tipos={tipos} perfil={perfil}
+            onImprimir={(porCategoria, raciones) =>
+              setImpresion({ modo: 'compras', porCategoria, raciones })} />
         )}
         {seccion === 'recetas' && (
           <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar}
@@ -365,6 +367,9 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
           modo={impresion.modo}
           receta={impresion.receta}
           etiqueta={impresion.receta ? etiquetaTipo(impresion.receta.t) : ''}
+          porCategoria={impresion.porCategoria}
+          raciones={impresion.raciones}
+          rango={`${fechaCorta(fechas[0])} al ${fechaCorta(fechas[6])}`}
           fechas={fechas} plan={semana.plan} porId={porId}
           tipos={tipos} objetivo={objetivoDe}
           titulo={esHija ? 'Plan de la hija, 3 años' : 'Plan de los adultos'}
