@@ -149,10 +149,27 @@ public/
   iconos/                 iconos de la app
 ```
 
-## Paleta
+## Paleta e icono
 
-Sigue SAP Fiori. Modo claro (Quartz Light): shell `#354A5F`, marca `#0A6ED1`, fondo `#F5F6F7`.
-Modo oscuro (Quartz Dark): fondo `#12171C`, tarjetas `#1D232A`, marca `#4DB1F0`.
+La identidad viene del plato de los cuatro grupos de alimentos. El icono es ese plato con sus
+cuadrantes, entre una cuchara y un tenedor, sobre verde profundo.
+
+Cada cuadrante da color a su grupo en la app, así que la guía de porciones y las etiquetas usan
+el mismo código visual que el icono:
+
+| Grupo | Color | De dónde sale |
+|---|---|---|
+| Verduras | `#4C9C63` | cuadrante verde |
+| Cereales | `#D99B2B` | cuadrante ámbar |
+| Frutas | `#C7566B` | cuadrante rosa |
+| Proteínas | `#E5762F` | cuadrante naranjo |
+| Lácteos | `#6B9CB8` | azul del canto del plato |
+| Grasas y ARL | `#C0A184` | madera de los cubiertos |
+
+Modo claro: shell `#2E6B4F`, marca `#2C7A4B`, papel `#FAF6F0`, texto `#3B2E24` (el marrón de los
+cubiertos). Modo oscuro: fondo `#16211B`, tarjetas `#21302A`, marca `#7FC98F`. Todas las
+combinaciones de texto sobre fondo verifican contraste AA (4.5:1 o más).
+
 El tema se elige con el botón de la cabecera y respeta la preferencia del sistema la primera vez.
 
 ## Nota
