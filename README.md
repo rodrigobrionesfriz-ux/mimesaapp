@@ -123,7 +123,8 @@ hogares/{hogarId}                     → { nombre, miembros[], creado }
   ├── semanas/{YYYY-MM-DD}            → plan de los adultos + lista de compras
   ├── semanas_hija/{YYYY-MM-DD}       → plan de la hija + lista de compras
   ├── historial/{perfil_fecha_tipo}   → { perfil, sugerido, real, motivo, estado, ts }
-  ├── recetas/{id}                    → recetas propias de la familia
+  ├── recetas/{id}                    → recetas propias, y ediciones de las del
+  │                                      recetario base cuando el id coincide
   └── config/pauta                    → texto e indicaciones del documento Word
 ```
 

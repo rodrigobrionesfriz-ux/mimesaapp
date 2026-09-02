@@ -40,7 +40,14 @@ service cloud.firestore {
 
       allow delete: if false;
 
-      // Todo el contenido del hogar: planes, historial, recetas y pauta.
+      // Contenido del hogar. Se declaran explícitamente las subcolecciones que usa
+      // la app, además del comodín, para que quede claro qué se está permitiendo.
+      match /semanas/{clave}      { allow read, write: if esMiembro(hogarId); }
+      match /semanas_hija/{clave} { allow read, write: if esMiembro(hogarId); }
+      match /historial/{id}       { allow read, write: if esMiembro(hogarId); }
+      match /recetas/{id}         { allow read, write: if esMiembro(hogarId); }
+      match /config/{id}          { allow read, write: if esMiembro(hogarId); }
+
       match /{documento=**} {
         allow read, write: if esMiembro(hogarId);
       }
