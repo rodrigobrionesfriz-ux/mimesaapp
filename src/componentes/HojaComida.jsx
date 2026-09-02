@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Replace, X, Printer } from 'lucide-react';
+import { Check, Replace, X, Printer, Pencil } from 'lucide-react';
 import { fechaLegible } from '../utiles';
 import { Boton } from './Comunes';
 import Hoja from './Hoja';
@@ -17,7 +17,7 @@ const MOTIVOS = [
 const OTRA = '__otra__';
 
 export default function HojaComida({
-  fecha, tipo, receta, recetas, tipos, onCerrar, onMarcar, onCambiar, onImprimir,
+  fecha, tipo, receta, recetas, tipos, onCerrar, onMarcar, onCambiar, onImprimir, onEditar,
 }) {
   const etiquetaTipo = (k) => tipos.find((t) => t.k === k)?.label || k;
   const [vista, setVista] = useState('receta');
@@ -61,9 +61,14 @@ export default function HojaComida({
             <>
               <DetalleReceta receta={receta} />
               <div className="espacio" />
-              <Boton bloque variante="secundario" onClick={() => onImprimir(receta)}>
-                <Printer size={16} />Imprimir esta receta
-              </Boton>
+              <div className="fila">
+                <Boton variante="secundario" onClick={() => onImprimir(receta)}>
+                  <Printer size={16} />Imprimir
+                </Boton>
+                <Boton variante="secundario" onClick={() => onEditar(receta)}>
+                  <Pencil size={16} />Editar
+                </Boton>
+              </div>
               <div className="espacio" />
               <Boton bloque onClick={() => onMarcar(fecha, tipo, 'cumplido')}>
                 <Check size={16} />Se preparó tal cual
