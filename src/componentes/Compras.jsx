@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Check, Info } from 'lucide-react';
+import { Check, Info, Printer } from 'lucide-react';
 import { iso, categoria } from '../utiles';
 import { consolidar } from '../datos/ingredientes';
-import { Vacio, Chips } from './Comunes';
+import { Vacio, Chips, Boton } from './Comunes';
 
 const RACIONES = [
   ['1', '1 ración'],
@@ -11,7 +11,7 @@ const RACIONES = [
   ['3', '3 raciones'],
 ];
 
-export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos, perfil }) {
+export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos, perfil, onImprimir }) {
   const [factor, setFactor] = useState(perfil === 'hija' ? '1' : '2.5');
 
   // Todas las líneas de ingrediente de la semana, con sus repeticiones.
@@ -55,6 +55,11 @@ export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos,
       </p>
 
       <Chips opciones={RACIONES} valor={factor} onCambio={setFactor} />
+      <div className="espacio" />
+      <Boton bloque variante="secundario"
+        onClick={() => onImprimir(porCategoria, RACIONES.find(([v]) => v === factor)?.[1])}>
+        <Printer size={16} />Imprimir la lista para el supermercado
+      </Boton>
       <div className="espacio" />
 
       {cats.map((cat) => (

@@ -111,10 +111,88 @@ function FichaReceta({ receta, etiqueta }) {
   );
 }
 
+/* ------------------- lista de compras para llevar al súper ------------------- */
+// El orden sigue la guía de la nutricionista: primero lo no perecible y al final
+// lo refrigerado, para no cortar la cadena de frío.
+const RECORRIDO = [
+  'Despensa',
+  'Panadería',
+  'Verduras y frutas',
+  'Refrigerados y bebidas vegetales',
+  'Carnes, pescados y huevos',
+];
+
+// Las columnas CSS no se comportan igual en todos los motores de impresión, así
+// que el reparto en dos columnas se hace acá, balanceando por cantidad de líneas.
+function repartir(cats, porCategoria) {
+  const alto = (c) => porCategoria[c].length + 2; // el título ocupa un par de líneas
+  const totalAlto = cats.reduce((n, c) => n + alto(c), 0);
+  const izquierda = [], derecha = [];
+  let acumulado = 0;
+  for (const c of cats) {
+    if (acumulado + alto(c) / 2 <= totalAlto / 2) izquierda.push(c);
+    else derecha.push(c);
+    acumulado += alto(c);
+  }
+  return [izquierda, derecha];
+}
+
+function ListaCompras({ porCategoria, titulo, rango, raciones }) {
+  const cats = [
+    ...RECORRIDO.filter((c) => porCategoria[c]?.length),
+    ...Object.keys(porCategoria).filter((c) => !RECORRIDO.includes(c)),
+  ];
+  const total = cats.reduce((n, c) => n + porCategoria[c].length, 0);
+  const [izquierda, derecha] = repartir(cats, porCategoria);
+
+  const columna = (lista) => (
+    <div className="compras-columna">
+      {lista.map((cat) => (
+        <section key={cat} className="compras-grupo">
+          <h2>{cat}</h2>
+          <ul>
+            {porCategoria[cat].map((it) => (
+              <li key={it.clave}>
+                <span className="casilla-papel" />
+                <span className="compra-nombre">{it.nombre}</span>
+                <span className="compra-cantidad">{it.cantidad || 'a gusto'}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="hoja-impresa">
+      <header className="impresion-cabecera">
+        <div>
+          <h1>Lista de compras</h1>
+          <p>{titulo} · {total} productos · cantidades para {raciones}</p>
+        </div>
+        <div className="impresion-rango">{rango}</div>
+      </header>
+
+      <div className="compras-columnas">
+        {columna(izquierda)}
+        {columna(derecha)}
+      </div>
+
+      <footer className="impresion-pie">
+        <span>Recorrido: primero lo no perecible, al final lo refrigerado y congelado</span>
+        <span>Revisa siempre el etiquetado buscando <strong>maní</strong></span>
+      </footer>
+    </div>
+  );
+}
+
 export default function Impresion(props) {
   return (
     <div className="impresion">
-      {props.modo === 'semana' ? <PosterSemana {...props} /> : <FichaReceta {...props} />}
+      {props.modo === 'semana' && <PosterSemana {...props} />}
+      {props.modo === 'receta' && <FichaReceta {...props} />}
+      {props.modo === 'compras' && <ListaCompras {...props} />}
     </div>
   );
 }
