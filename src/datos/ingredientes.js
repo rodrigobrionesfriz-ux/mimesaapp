@@ -77,6 +77,10 @@ const aplicarSinonimos = (n) => {
   return n;
 };
 
+// Productos donde la suma no ayuda a comprar: nadie pide "32 tazas de ensalada".
+// Se listan igual, pero sin cantidad.
+const SIN_CANTIDAD = /^(verduras para ensalada|lechuga|hojas verdes|verduras surtidas|verduras|fruta de estación)$/i;
+
 /** Interpreta una línea de ingrediente. */
 export function interpretar(linea) {
   const original = linea.trim();
@@ -206,9 +210,9 @@ function formatear(total, familia, unidad) {
 // "Cebolla y ajo" son dos productos distintos en el carro. Sólo se separan las
 // líneas sin cantidad, para no romper cosas como "1 ½ taza de quinoa".
 const separar = (linea) => (
-  /^\s*[\d½¼¾⅓⅔⅛]/.test(linea) || !/ y /i.test(linea)
+  /^\s*[\d½¼¾⅓⅔⅛]/.test(linea) || !/(\s+y\s+|,)/i.test(linea)
     ? [linea]
-    : linea.split(/\s+y\s+/i).map((x) => x.trim()).filter(Boolean)
+    : linea.split(/\s+y\s+|\s*,\s*/i).map((x) => x.trim()).filter(Boolean)
 );
 
 export function consolidar(lineas, factor = 1) {
@@ -263,7 +267,9 @@ export function consolidar(lineas, factor = 1) {
       return {
       clave: it.clave,
       nombre: n.charAt(0).toUpperCase() + n.slice(1),
-      cantidad: formatear(it.total === null ? null : it.total * factor, it.familia, it.unidad),
+      cantidad: SIN_CANTIDAD.test(it.nombre)
+        ? null
+        : formatear(it.total === null ? null : it.total * factor, it.familia, it.unidad),
       veces: it.veces,
       };
     })
