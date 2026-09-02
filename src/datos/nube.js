@@ -154,10 +154,25 @@ export function useRecetasPropias(hogarId) {
       (s) => setPropias(s.docs.map((d) => ({ ...d.data(), id: d.id, propia: true }))));
   }, [hogarId]);
 
-  const agregar = useCallback((r) => addDoc(collection(db, 'hogares', hogarId, 'recetas'), r), [hogarId]);
-  const borrar = useCallback((id) => deleteDoc(doc(db, 'hogares', hogarId, 'recetas', id)), [hogarId]);
+  const agregar = useCallback(
+    (r) => addDoc(collection(db, 'hogares', hogarId, 'recetas'), r),
+    [hogarId],
+  );
 
-  return { propias, agregar, borrar };
+  // Editar sirve para dos casos. Si la receta es propia, se actualiza el documento.
+  // Si es una del recetario base (que vive en el código y no se puede tocar), se
+  // guarda una versión de la familia con el mismo id, que la reemplaza al mostrarla.
+  const editar = useCallback(
+    (id, r) => setDoc(doc(db, 'hogares', hogarId, 'recetas', id), r),
+    [hogarId],
+  );
+
+  const borrar = useCallback(
+    (id) => deleteDoc(doc(db, 'hogares', hogarId, 'recetas', id)),
+    [hogarId],
+  );
+
+  return { propias, agregar, editar, borrar };
 }
 
 /* ---------------------- pauta de la nutricionista ---------------------- */
