@@ -123,7 +123,8 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
   const nina = useSemana(hogarId, claveSemana, 'semanas_hija');
   const { semana, guardar } = perfil === 'hija' ? nina : adultos;
   const { historial, registrar, quitar, vaciar } = useHistorial(hogarId);
-  const { propias, agregar, borrar } = useRecetasPropias(hogarId);
+  const { propias, agregar, editar, borrar } = useRecetasPropias(hogarId);
+  const [editarReceta, setEditarReceta] = useState(null);
   const { pauta, guardar: guardarPauta, quitar: quitarPauta } = usePauta(hogarId);
 
   const esHija = perfil === 'hija';
@@ -139,20 +140,43 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
     ? 'Agua a libre demanda entre comidas'
     : `${SUPLEMENTO.nombre} · ${SUPLEMENTO.momento.toLowerCase()} · ${SUPLEMENTO.cantidad}`;
 
+  // Una receta propia cuyo id coincide con una del recetario base es una edición
+  // de la familia: reemplaza a la original al mostrarla y al planificar.
+  const aplicarEdiciones = useCallback((lista) => lista.map((r) => {
+    const edicion = propias.find((p) => p.id === r.id);
+    // Es una edición de una receta del recetario, no una receta propia: por eso
+    // se ofrece restaurar el original en vez de borrarla.
+    return edicion ? { ...r, ...edicion, propia: false, editada: true } : r;
+  }), [propias]);
+
+  const idsBase = useMemo(
+    () => new Set([...RECETARIO, ...RECETARIO_ALIMENTARTE, ...RECETARIO_HIJA].map((r) => r.id)),
+    [],
+  );
+  const soloPropias = useMemo(
+    () => propias.filter((r) => !idsBase.has(r.id)),
+    [propias, idsBase],
+  );
+
   const base = esHija ? RECETARIO_HIJA : [...RECETARIO, ...RECETARIO_ALIMENTARTE];
   const recetas = useMemo(
-    () => [...base, ...propias.filter((r) => (r.perfil === 'hija') === esHija)],
-    [base, propias, esHija],
+    () => [
+      ...aplicarEdiciones(base),
+      ...soloPropias.filter((r) => (r.perfil === 'hija') === esHija),
+    ],
+    [base, soloPropias, esHija, aplicarEdiciones],
   );
   const porId = useMemo(() => Object.fromEntries(recetas.map((r) => [r.id, r])), [recetas]);
   const todasLasRecetas = useMemo(
     () => [
-      ...RECETARIO,
-      ...RECETARIO_ALIMENTARTE,
-      ...RECETARIO_HIJA.map((r) => ({ ...r, deLaHija: true })),
-      ...propias,
+      ...aplicarEdiciones([
+        ...RECETARIO,
+        ...RECETARIO_ALIMENTARTE,
+        ...RECETARIO_HIJA.map((r) => ({ ...r, deLaHija: true })),
+      ]),
+      ...soloPropias,
     ],
-    [propias],
+    [soloPropias, aplicarEdiciones],
   );
   const fechas = useMemo(() => Array.from({ length: 7 }, (_, i) => sumarDias(inicio, i)), [inicio]);
 
@@ -327,8 +351,11 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
               setImpresion({ modo: 'compras', porCategoria, raciones })} />
         )}
         {seccion === 'recetas' && (
-          <Recetas recetas={todasLasRecetas} onAgregar={agregar} onBorrar={borrar}
-            onImprimir={(receta) => setImpresion({ modo: 'receta', receta })} />
+          <Recetas recetas={todasLasRecetas}
+            onAgregar={agregar} onEditar={editar} onBorrar={borrar}
+            onImprimir={(receta) => setImpresion({ modo: 'receta', receta })}
+            editarInicial={editarReceta}
+            onConsumirEditar={() => setEditarReceta(null)} />
         )}
         {seccion === 'porciones' && <Porciones />}
         {seccion === 'hija' && <GuiaHija />}
@@ -358,6 +385,7 @@ function Aplicacion({ hogarId, usuario, onSalir, tema, alternarTema }) {
           receta={porId[slotActivo?.id]} recetas={recetas} tipos={tipos}
           onCerrar={() => setModal(null)} onMarcar={marcar} onCambiar={cambiarSugerencia}
           onImprimir={(receta) => setImpresion({ modo: 'receta', receta })}
+          onEditar={(receta) => { setModal(null); setEditarReceta(receta); setSeccion('recetas'); }}
         />
       )}
       </div>
