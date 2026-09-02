@@ -1,53 +1,92 @@
-import React, { useMemo } from 'react';
-import { Check } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Check, Info } from 'lucide-react';
 import { iso, categoria } from '../utiles';
-import { Vacio } from './Comunes';
+import { consolidar } from '../datos/ingredientes';
+import { Vacio, Chips } from './Comunes';
 
-export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos }) {
-  const lista = useMemo(() => {
-    const m = {};
+const RACIONES = [
+  ['1', '1 ración'],
+  ['2', '2 raciones'],
+  ['2.5', '2 adultos + hija'],
+  ['3', '3 raciones'],
+];
+
+export default function Compras({ fechas, plan, porId, compras, onMarcar, tipos, perfil }) {
+  const [factor, setFactor] = useState(perfil === 'hija' ? '1' : '2.5');
+
+  // Todas las líneas de ingrediente de la semana, con sus repeticiones.
+  const lineas = useMemo(() => {
+    const out = [];
     for (const f of fechas.map(iso)) {
       const dia = plan[f];
       if (!dia) continue;
       for (const t of tipos) {
         const r = porId[dia[t.k]?.id];
-        if (!r) continue;
-        for (const ing of r.ing) {
-          const cat = categoria(ing);
-          m[cat] = m[cat] || {};
-          m[cat][ing] = (m[cat][ing] || 0) + 1;
-        }
+        if (r) out.push(...r.ing);
       }
     }
-    return m;
+    return out;
   }, [fechas, plan, porId, tipos]);
 
-  const cats = Object.keys(lista).sort();
+  const porCategoria = useMemo(() => {
+    const items = consolidar(lineas, Number(factor));
+    const m = {};
+    for (const it of items) {
+      const cat = categoria(it.nombre);
+      (m[cat] = m[cat] || []).push(it);
+    }
+    return m;
+  }, [lineas, factor]);
+
+  const cats = Object.keys(porCategoria).sort();
   if (!cats.length) {
-    return <Vacio>Arma primero la semana y aquí aparece la lista de compras agrupada por pasillo.</Vacio>;
+    return <Vacio>Arma primero la semana y aquí aparece la lista de compras consolidada.</Vacio>;
   }
 
-  const total = cats.reduce((n, c) => n + Object.keys(lista[c]).length, 0);
-  const listos = cats.reduce((n, c) => n + Object.keys(lista[c]).filter((i) => compras[i]).length, 0);
+  const todos = cats.flatMap((c) => porCategoria[c]);
+  const listos = todos.filter((i) => compras[i.clave]).length;
 
   return (
     <>
       <h3 className="subtitulo" style={{ marginBottom: 2 }}>Compras de la semana</h3>
-      <p className="parrafo">{listos} de {total} en el carro</p>
+      <p className="parrafo" style={{ marginBottom: 10 }}>
+        {todos.length} productos, {listos} en el carro. Las cantidades vienen sumadas
+        de todas las preparaciones de la semana.
+      </p>
+
+      <Chips opciones={RACIONES} valor={factor} onCambio={setFactor} />
+      <div className="espacio" />
+
       {cats.map((cat) => (
         <section key={cat} className="tarjeta">
           <div className="tarjeta-cabecera"><h4 style={{ fontSize: 14 }}>{cat}</h4></div>
-          {Object.entries(lista[cat]).map(([ing, veces]) => (
-            <button key={ing} className="lista-item" onClick={() => onMarcar(ing)}>
-              <span className={`casilla${compras[ing] ? ' casilla-marcada' : ''}`}>
-                {compras[ing] && <Check size={12} />}
+          {porCategoria[cat].map((it) => (
+            <button key={it.clave} className="lista-item" onClick={() => onMarcar(it.clave)}>
+              <span className={`casilla${compras[it.clave] ? ' casilla-marcada' : ''}`}>
+                {compras[it.clave] && <Check size={12} />}
               </span>
-              <span style={{ flex: 1 }} className={compras[ing] ? 'tachado' : undefined}>{ing}</span>
-              {veces > 1 && <span className="dato" style={{ color: 'var(--marca)' }}>x{veces}</span>}
+              <span style={{ flex: 1 }} className={compras[it.clave] ? 'tachado' : undefined}>
+                {it.nombre}
+                {it.veces > 1 && (
+                  <span className="dato" style={{ display: 'block', fontSize: 12 }}>
+                    en {it.veces} preparaciones
+                  </span>
+                )}
+              </span>
+              <span className="cantidad-compra">{it.cantidad || 'a gusto'}</span>
             </button>
           ))}
         </section>
       ))}
+
+      <div className="nota" style={{ marginTop: 16, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+        <Info size={15} style={{ flexShrink: 0, marginTop: 1, color: 'var(--marca)' }} />
+        <span>
+          Las cantidades se redondean hacia arriba y las medidas equivalentes se unifican:
+          media taza más dos cucharadas de avena aparecen como una sola línea. Lo que va
+          «a gusto» son condimentos y aliños que conviene tener siempre en la despensa.
+        </span>
+      </div>
     </>
   );
 }
