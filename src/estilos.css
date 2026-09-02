@@ -1,69 +1,85 @@
 /* ============================================================
-   Mi minuta familiar — paleta SAP Fiori (Quartz Light / Quartz Dark)
-   Los nombres de variable siguen la convención de Fiori para
-   que sea evidente de dónde sale cada color.
+   Mi minuta familiar — paleta del plato de los cuatro grupos.
+   Verde de las verduras, ámbar de los cereales, rosa de las
+   frutas y naranjo de las proteínas, sobre papel cálido y con
+   el marrón de los cubiertos como color de texto.
    ============================================================ */
 
 :root,
 [data-tema='claro'] {
-  --shell-fondo: #354a5f;
+  --shell-fondo: #2e6b4f;
   --shell-texto: #ffffff;
-  --shell-texto-tenue: #cfd8e0;
+  --shell-texto-tenue: #c8dcd0;
 
-  --fondo: #f5f6f7;
-  --fondo-alterno: #eaecee;
+  --fondo: #faf6f0;
+  --fondo-alterno: #f0e9de;
   --tarjeta: #ffffff;
-  --tarjeta-hover: #f2f6fa;
+  --tarjeta-hover: #f4f0e7;
 
-  --marca: #0a6ed1;
-  --marca-oscura: #0854a0;
-  --marca-suave: #e5f0fa;
-  --marca-borde: #a6c8e8;
+  --marca: #2c7a4b;
+  --marca-oscura: #1f5c37;
+  --marca-suave: #e6f2e6;
+  --marca-borde: #a8d8a0;
 
-  --texto: #32363a;
-  --texto-tenue: #6a6d70;
-  --borde: #d9d9d9;
-  --borde-sutil: #e5e5e5;
+  --texto: #3b2e24;
+  --texto-tenue: #7a6a5c;
+  --borde: #e2d9cc;
+  --borde-sutil: #ede6db;
 
-  --positivo: #107e3e;
-  --positivo-fondo: #e5f5ea;
-  --critico: #b8560f;
-  --critico-fondo: #fdf3e7;
-  --negativo: #bb0000;
-  --negativo-fondo: #ffebeb;
-  --neutro-fondo: #eaecee;
+  --positivo: #2c7a4b;
+  --positivo-fondo: #e6f2e6;
+  --critico: #a2551a;
+  --critico-fondo: #fdf0df;
+  --negativo: #b23b2e;
+  --negativo-fondo: #fbe7e4;
+  --neutro-fondo: #f0e9de;
 
-  --sombra: 0 1px 2px rgba(53, 74, 95, 0.12);
-  --sombra-alta: 0 4px 16px rgba(53, 74, 95, 0.2);
+  /* Los cuatro grupos del plato, más los complementarios. */
+  --grupo-cereal: #d99b2b;
+  --grupo-proteina: #e5762f;
+  --grupo-verdura: #4c9c63;
+  --grupo-fruta: #c7566b;
+  --grupo-lacteo: #6b9cb8;
+  --grupo-grasa: #8b6b4a;
+
+  --sombra: 0 1px 2px rgba(59, 46, 36, 0.1);
+  --sombra-alta: 0 4px 16px rgba(59, 46, 36, 0.18);
 }
 
 [data-tema='oscuro'] {
-  --shell-fondo: #12171c;
-  --shell-texto: #eaecee;
-  --shell-texto-tenue: #a9b4be;
+  --shell-fondo: #16211b;
+  --shell-texto: #f0eae2;
+  --shell-texto-tenue: #a8b8ac;
 
-  --fondo: #12171c;
-  --fondo-alterno: #1d232a;
-  --tarjeta: #1d232a;
-  --tarjeta-hover: #262e36;
+  --fondo: #16211b;
+  --fondo-alterno: #21302a;
+  --tarjeta: #21302a;
+  --tarjeta-hover: #2b3d34;
 
-  --marca: #4db1f0;
-  --marca-oscura: #7cc8ff;
-  --marca-suave: #16324a;
-  --marca-borde: #2b5f89;
+  --marca: #7fc98f;
+  --marca-oscura: #a3dcae;
+  --marca-suave: #1f3a2a;
+  --marca-borde: #3c6b4c;
 
-  --texto: #eaecee;
-  --texto-tenue: #a9b4be;
-  --borde: #3a4249;
-  --borde-sutil: #2b3238;
+  --texto: #f0eae2;
+  --texto-tenue: #a8b8ac;
+  --borde: #35473c;
+  --borde-sutil: #2a3a32;
 
-  --positivo: #5dbf6e;
-  --positivo-fondo: #1a3324;
-  --critico: #f2a355;
-  --critico-fondo: #33261a;
-  --negativo: #ff8888;
-  --negativo-fondo: #3a1f22;
-  --neutro-fondo: #262e36;
+  --positivo: #7fc98f;
+  --positivo-fondo: #1f3a2a;
+  --critico: #e8a55c;
+  --critico-fondo: #37291a;
+  --negativo: #e8918a;
+  --negativo-fondo: #3a2320;
+  --neutro-fondo: #2b3d34;
+
+  --grupo-cereal: #e8bd63;
+  --grupo-proteina: #f0995c;
+  --grupo-verdura: #7fc98f;
+  --grupo-fruta: #e28a9c;
+  --grupo-lacteo: #8fbcd6;
+  --grupo-grasa: #c0a184;
 
   --sombra: 0 1px 2px rgba(0, 0, 0, 0.5);
   --sombra-alta: 0 4px 16px rgba(0, 0, 0, 0.6);
@@ -538,19 +554,19 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 
   .impresion-cabecera {
     display: flex; align-items: flex-end; justify-content: space-between;
-    border-bottom: 2px solid #0a6ed1;
+    border-bottom: 2px solid #2c7a4b;
     padding-bottom: 6px; margin-bottom: 12px;
   }
   .impresion-cabecera h1 { font-size: 22pt; letter-spacing: -0.02em; margin: 0; }
   .impresion-cabecera p { margin: 3px 0 0; font-size: 10pt; color: #444; }
-  .impresion-rango { font-size: 12pt; color: #0a6ed1; font-weight: 700; white-space: nowrap; }
+  .impresion-rango { font-size: 12pt; color: #2c7a4b; font-weight: 700; white-space: nowrap; }
 
   /* ---------- póster semanal ---------- */
   .tabla-semana {
     width: 100%; border-collapse: collapse; table-layout: fixed;
   }
   .tabla-semana th, .tabla-semana td {
-    border: 1px solid #b9c2ca;
+    border: 1px solid #cdc3b4;
     padding: 8px 7px;
     vertical-align: top;
     font-size: 9.5pt;
@@ -559,7 +575,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
   /* Alto fijo por fila para que el póster llene la hoja y se lea de lejos. */
   .tabla-semana tbody td, .tabla-semana tbody th { height: 88px; }
   .tabla-semana thead th {
-    background: #0a6ed1; color: #fff;
+    background: #2c7a4b; color: #fff;
     text-align: center; padding: 9px 4px;
   }
   .dia-nombre { display: block; font-size: 12pt; font-weight: 700; }
@@ -567,18 +583,18 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 
   .col-tiempo {
     width: 104px;
-    background: #eef4fa;
+    background: #eaf3ec;
     text-align: left;
   }
   .tiempo-nombre { display: block; font-size: 10.5pt; font-weight: 700; }
   .tiempo-meta { display: block; font-size: 7.4pt; color: #555; font-weight: 400; margin-top: 3px; }
 
-  .tabla-semana tbody tr:nth-child(even) td { background: #f7f9fb; }
+  .tabla-semana tbody tr:nth-child(even) td { background: #faf6f0; }
   .plato { display: block; }
   .marca-legumbre {
     display: inline-block; margin-top: 4px;
     font-size: 6.8pt; letter-spacing: .04em; text-transform: uppercase;
-    border: 1px solid #0a6ed1; color: #0a6ed1;
+    border: 1px solid #2c7a4b; color: #2c7a4b;
     border-radius: 6px; padding: 0 3px;
   }
   .vacio-celda { color: #aaa; }
@@ -586,7 +602,7 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
   .impresion-pie {
     display: flex; justify-content: space-between; gap: 12px;
     margin-top: 10px; padding-top: 6px;
-    border-top: 1px solid #b9c2ca;
+    border-top: 1px solid #cdc3b4;
     font-size: 8pt; color: #444;
   }
 
@@ -594,28 +610,28 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
   .compras-columnas { display: flex; align-items: flex-start; }
   .compras-columna { flex: 1 1 50%; min-width: 0; }
   .compras-columna:first-child { padding-right: 24px; }
-  .compras-columna:last-child { padding-left: 24px; border-left: 1px solid #e3e8ec; }
+  .compras-columna:last-child { padding-left: 24px; border-left: 1px solid #e6ddd0; }
   .compras-grupo { break-inside: avoid; margin-bottom: 16px; }
   .compras-grupo h2 {
     font-size: 10.5pt; text-transform: uppercase; letter-spacing: .06em;
-    color: #0a6ed1; margin: 0 0 7px; padding-bottom: 4px;
-    border-bottom: 1.5px solid #b9c2ca;
+    color: #2c7a4b; margin: 0 0 7px; padding-bottom: 4px;
+    border-bottom: 1.5px solid #cdc3b4;
   }
   .compras-grupo ul { list-style: none; margin: 0; padding: 0; }
   .compras-grupo li {
     display: flex; align-items: baseline; gap: 8px;
     padding: 4px 0;
-    border-bottom: 1px dotted #d6dce1;
+    border-bottom: 1px dotted #ded5c8;
     font-size: 11pt;
   }
   .casilla-papel {
     flex: 0 0 auto; margin-right: 2px;
     width: 11px; height: 11px;
-    border: 1.2px solid #6a7580; border-radius: 2px;
+    border: 1.2px solid #7a6a5c; border-radius: 2px;
   }
   .compra-nombre { flex: 1; }
   .compra-cantidad {
-    flex: 0 0 auto; font-weight: 700; color: #0a6ed1; font-size: 10pt;
+    flex: 0 0 auto; font-weight: 700; color: #2c7a4b; font-size: 10pt;
     white-space: nowrap;
   }
 
@@ -624,11 +640,11 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
     display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
   }
   .ficha-meta span {
-    border: 1px solid #0a6ed1; color: #0a6ed1;
+    border: 1px solid #2c7a4b; color: #2c7a4b;
     border-radius: 12px; padding: 3px 11px; font-size: 10pt;
   }
   .ficha-alerta {
-    border: 1.5px solid #bb0000; color: #bb0000;
+    border: 1.5px solid #b23b2e; color: #b23b2e;
     border-radius: 4px; padding: 10px 13px;
     font-size: 11.5pt; font-weight: 700; margin: 0 0 16px;
   }
@@ -637,8 +653,8 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
   .ficha-columnas section:last-child { flex: 1; }
   .ficha-columnas h2 {
     font-size: 11.5pt; text-transform: uppercase; letter-spacing: .06em;
-    color: #0a6ed1; margin: 0 0 10px; padding-bottom: 5px;
-    border-bottom: 1.5px solid #b9c2ca;
+    color: #2c7a4b; margin: 0 0 10px; padding-bottom: 5px;
+    border-bottom: 1.5px solid #cdc3b4;
   }
   .ficha-columnas ul, .ficha-columnas ol {
     margin: 0; padding-left: 18px; font-size: 12.5pt; line-height: 1.45;
@@ -647,12 +663,12 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
   .ficha-nota-porcion { font-size: 9pt; color: #555; margin-top: 16px; font-style: italic; line-height: 1.4; }
   .ficha-truco {
     margin-top: 26px; padding: 13px 16px;
-    background: #eef4fa; border-left: 4px solid #0a6ed1;
+    background: #eaf3ec; border-left: 4px solid #2c7a4b;
     font-size: 11.5pt; line-height: 1.45;
   }
   .ficha-truco strong {
     display: block; font-size: 9pt; text-transform: uppercase;
-    letter-spacing: .06em; color: #0a6ed1; margin-bottom: 5px;
+    letter-spacing: .06em; color: #2c7a4b; margin-bottom: 5px;
   }
 }
 
